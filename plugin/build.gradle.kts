@@ -18,12 +18,19 @@ plugins {
     id("com.gradle.plugin-publish") version "1.2.1"
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
 
 dependencies {
+//    implementation("de.undercouch.download:de.undercouch.download.gradle.plugin:5.5.0")
+
     // Use the Kotlin JUnit 5 integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 

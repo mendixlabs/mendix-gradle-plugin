@@ -5,12 +5,22 @@ package mxw.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.Plugin
+import java.io.BufferedReader
+import java.io.InputStreamReader
+
+open class MxGradlePluginExtension {
+    var mendixVersion: String = ""
+    var mprFileName: String? = null
+}
 
 /**
  * A simple 'hello world' plugin.
  */
 class MxwGradlePlugin: Plugin<Project> {
     override fun apply(project: Project) {
+
+        val extension = project.extensions.create("mendix", MxGradlePluginExtension::class.java)
+
         // Register a task
         project.tasks.register("mxw") { task ->
             task.doLast {
@@ -18,10 +28,29 @@ class MxwGradlePlugin: Plugin<Project> {
             }
         }
 
-        project.tasks.register("mxbuild") { task ->
-            task.doLast {
-                println("MxBuild placeholder")
+        project.tasks.register("mxbuild", MxBuildTask::class.java) { task ->
+            task.messageText = "building..."
+        }
+
+        project.tasks.register("mxbuildtest") { _ ->
+            val mxTools = MxTools(extension.mendixVersion)
+            println("Using ${mxTools.getMxBuildLocation()}")
+
+            val mxbuild = ProcessBuilder(mxTools.getMxBuildLocation().toString(), "--help")
+                    .redirectOutput(ProcessBuilder.Redirect.PIPE)
+                    .redirectError(ProcessBuilder.Redirect.INHERIT)
+                    .start()
+
+            var output: String = ""
+            val inputStream =  BufferedReader(InputStreamReader(mxbuild.getInputStream()))
+            while ( inputStream.readLine()?.also { output = it } != null) {
+                println("Debug: " + output)
             }
+            inputStream.close()
+
+            val result = mxbuild.waitFor();
+
+            println("mxbuild exit code: ${result}")
         }
     }
 }
