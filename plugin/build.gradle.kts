@@ -4,7 +4,7 @@
  * This generated file contains a sample Gradle plugin project to get you started.
  * For more details on writing Custom Plugins, please refer to https://docs.gradle.org/8.5/userguide/custom_plugins.html in the Gradle documentation.
  */
-group = "com.mendixlabs.gradle-plugin"
+group = "mendixlabs.mendix-gradle-plugin"
 version = "0.0.1"
 
 plugins {
@@ -29,6 +29,8 @@ repositories {
 }
 
 dependencies {
+    implementation("org.xerial:sqlite-jdbc:3.45.3.0")
+    implementation("com.google.code.gson:gson:2.10.1")
 //    implementation("de.undercouch.download:de.undercouch.download.gradle.plugin:5.5.0")
 
     // Use the Kotlin JUnit 5 integration.
@@ -42,11 +44,11 @@ gradlePlugin {
     vcsUrl = "https://github.com/mendixlabs/mendix-gradle-plugin.git"
 
     val mendixGradlePlugin by plugins.creating {
-        id = "com.mendixlabs.gradle-plugin"
+        id = "mendixlabs.mendix-gradle-plugin"
         displayName = "Mendix Gradle Plugin"
         description = "A plugin that helps you to interact with Mendix tools in a project."
         tags = listOf("mendix", "project", "mxbuild")
-        implementationClass = "mxw.gradle.MxwGradlePlugin"
+        implementationClass = "mendixlabs.mendixgradleplugin.MendixGradlePlugin"
     }
 }
 
@@ -55,8 +57,6 @@ publishing {
         mavenLocal()
     }
 }
-
-
 
 // Add a source set for the functional test suite
 val functionalTestSourceSet = sourceSets.create("functionalTest") {

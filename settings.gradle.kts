@@ -5,5 +5,5 @@
  * For more detailed information on multi-project builds, please refer to https://docs.gradle.org/8.5/userguide/building_swift_projects.html in the Gradle documentation.
  */
 
-rootProject.name = "gradle-plugin"
+rootProject.name = "mendix-gradle-plugin"
 include("plugin")

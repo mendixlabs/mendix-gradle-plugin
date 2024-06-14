@@ -1,0 +1,29 @@
+admin {
+  adminPassword = "verysecret1"
+}
+
+runtime {
+  http {
+    addresses = ["0.0.0.0"]
+  }
+
+  params {
+    DTAPMode = "D"
+    DatabaseType = "HSQLDB"
+    DatabaseJdbcUrl = "jdbc:hsqldb:mem:embeddedDataSource"
+
+    MicroflowConstants {
+%MICROFLOW_CONSTANTS%
+    }
+
+    MyScheduledEvents = "%SCHEDULED_EVENTS%"
+    ScheduledEventExecution = SPECIFIED
+  }
+}
+
+logging = [{
+    name = stdout
+    type = console
+    autoSubscribe = INFO
+    levels = {}
+}]
