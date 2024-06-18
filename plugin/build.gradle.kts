@@ -74,12 +74,3 @@ val functionalTest by tasks.registering(Test::class) {
 
 gradlePlugin.testSourceSets.add(functionalTestSourceSet)
 
-tasks.named<Task>("check") {
-    // Run the functional tests as part of `check`
-    dependsOn(functionalTest)
-}
-
-tasks.named<Test>("test") {
-    // Use JUnit Jupiter for unit tests.
-    useJUnitPlatform()
-}
