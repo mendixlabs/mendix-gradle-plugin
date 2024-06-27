@@ -1,11 +1,11 @@
 #!/bin/sh
 ###############################################################################
-#  Mendix startup script for Windows
+#  Mendix startup script for Linux/Mac.
 #
 #  Usage:
-#    start.bat [CONFIG]
+#    start.sh [CONFIG]
 #
-#    CONFIG      Optional path to config file. Defaults to etc\app.conf.
+#    CONFIG      Optional path to config file. Defaults to etc/app.conf.
 #
 #  The following environment variables can be set
 #    JAVA_HOME   Path to the JRE installation
@@ -27,9 +27,10 @@ JAVA=java
 if [ ! -z "${JAVA_HOME}" ]; then
   JAVA=${JAVA_HOME}/bin/java
 fi
-$JAVA >/dev/null 2>&1
+$JAVA -version>/dev/null 2>&1
 if [ $? -ne 0 ]; then
   echo "java can't be found"
+  exit 1
 fi
 
 ${JAVA} ${JAVA_OPTS} -DMX_INSTALL_PATH=${BASE_DIR} -jar ${BASE_DIR}/runtime/launcher/runtimelauncher.jar ${BASE_DIR}/app ${CONFIG}
