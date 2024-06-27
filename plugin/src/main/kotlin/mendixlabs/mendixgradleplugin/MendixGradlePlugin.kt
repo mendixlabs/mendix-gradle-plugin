@@ -145,6 +145,13 @@ class MendixGradlePlugin: Plugin<Project> {
                     "--output-dir", project.rootDir.absolutePath))
         }
 
+        project.tasks.register<GenerateDockerFile>("mxGenerateDockerfile", GenerateDockerFile::class.java) { task ->
+            task.group = PLUGIN_GROUP_MX
+            task.description = "Generate a Dockerfile for this project."
+
+            task.dependsOn("installMxDist")
+        }
+
         // -------------------------------------------------------------------------------------------------------------
         // Tasks for operations on project
         // -------------------------------------------------------------------------------------------------------------

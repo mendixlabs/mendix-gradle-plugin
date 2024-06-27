@@ -1,0 +1,16 @@
+FROM %BASE_IMAGE%
+
+RUN mkdir /home/nobody && \
+  chown nobody:nogroup /home/nobody && \
+  chmod 700 /home/nobody && \
+  usermod -d /home/nobody nobody
+
+COPY --chown=nobody:nogroup build/install/%PROJECT%/runtime /opt/app/runtime
+COPY --chown=nobody:nogroup build/install/%PROJECT%/app /opt/app/deployment
+COPY --chown=nobody:nogroup build/install/%PROJECT%/etc /opt/app/etc
+
+EXPOSE 8080
+
+USER nobody
+
+CMD ["java", "-DMX_INSTALL_PATH=/opt/app", "-jar", "/opt/app/runtime/launcher/runtimelauncher.jar", "/opt/app/deployment", "/opt/app/etc/app.conf"]

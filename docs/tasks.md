@@ -149,6 +149,25 @@ Parameters:
 | `templateFile` | String | Provide a different template file to the config file.                                          |
 | `outputFile` | String | Filename of the config file to be written. Defaults to `app.conf` in the same folder as the MDA. |
 
+## `mxGenerateDockerfile`
+
+Generates a Dockerfile for the current project. It will use the distribution created by `mxDistZip` as input and create
+a simple container. See [Building a Docker container](docker.md) for more information. 
+
+Execute:
+
+```bat
+gradlew.bat mxGenerateDockerfile
+```
+
+Parameters:
+
+| Parameter      | Type    | Description                                                                                      |
+|----------------|---------|--------------------------------------------------------------------------------------------------|
+| `baseImage`    | String  | The docker base image to use. Defaults to `eclipse-temurin:21.0.3_9-jre-jammy`.                  |
+| `templateFile` | String | Provide a template Dockerfile.                                                                   |
+| `outputFile`   | String | Filename of the Dockerfile file to be written. Defaults to `docker/Dockerfile` in the build dir. |
+
 
 ## `mxDeployMDA`
 
