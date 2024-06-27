@@ -289,6 +289,7 @@ class MendixGradlePlugin: Plugin<Project> {
                 spec.into("app") { appSpec ->
                     appSpec.from(project.zipTree(project.layout.buildDirectory.file("${appBuildDir}/${project.name}.mda")))
                 }
+
                 // make sure we can actually run this app
                 spec.into("app/data/files") { dataSpec ->
                     dataSpec.from(project.layout.buildDirectory.file("app/.files"))
@@ -310,8 +311,11 @@ class MendixGradlePlugin: Plugin<Project> {
         }
 
         project.tasks.named("mxDistZip") { task ->
-            task.dependsOn("mxEnsureRuntime", "mxStartScripts", "mxGenerateConfig")
-            task.mustRunAfter("mxbuild")
+            task.dependsOn("mxEnsureRuntime", "mxbuild", "mxStartScripts", "mxGenerateConfig")
+        }
+
+        project.tasks.named("installMxDist") { task ->
+            task.dependsOn("mxEnsureRuntime", "mxbuild", "mxStartScripts", "mxGenerateConfig")
         }
 
     }
