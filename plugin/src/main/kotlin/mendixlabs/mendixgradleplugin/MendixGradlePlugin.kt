@@ -249,8 +249,8 @@ class MendixGradlePlugin: Plugin<Project> {
             task.dependsOn("mxInternalDownloadRuntime")
             task.mustRunAfter("mxInternalDownloadRuntime")
 
-            val mxbuildDistribtionFile = project.tasks.getByName("mxInternalDownloadRuntime").outputs.files.singleFile
-            task.from(project.tarTree(project.resources.gzip(mxbuildDistribtionFile)))
+            val runtimeDistribtionFile = project.tasks.getByName("mxInternalDownloadRuntime").outputs.files.singleFile
+            task.from(project.tarTree(project.resources.gzip(runtimeDistribtionFile)))
             task.into(project.layout.buildDirectory.dir("modeler/"))
         }
 
