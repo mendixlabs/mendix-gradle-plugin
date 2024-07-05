@@ -156,8 +156,7 @@ class MendixGradlePlugin: Plugin<Project> {
             task.group = PLUGIN_GROUP_MX
             task.description = "Generate config file for Mendix 10.11 and higher m2ee-less start."
 
-            task.dependsOn("mxEnsureModeler")
-            task.mustRunAfter("mxbuild")
+            task.dependsOn("mxbuild")
 
             task.mda.set(project.layout.buildDirectory.file("${appBuildDir}/${project.name}.mda"))
             task.outputFile.set(project.layout.buildDirectory.file("${appBuildDir}/app.conf"))
@@ -167,8 +166,7 @@ class MendixGradlePlugin: Plugin<Project> {
             task.from(project.zipTree(project.layout.buildDirectory.file("${appBuildDir}/${project.name}.mda")))
             task.into(project.layout.buildDirectory.dir("deployment"))
 
-            task.dependsOn("mxEnsureModeler")
-            task.mustRunAfter("mxbuild")
+            task.dependsOn("mxbuild")
 
             task.doLast {
                 project.mkdir(project.layout.buildDirectory.dir("deployment/data/files"))
@@ -180,7 +178,6 @@ class MendixGradlePlugin: Plugin<Project> {
             task.description = "Run the Mendix project"
 
             task.dependsOn("mxEnsureRuntime", "mxGenerateConfig", "mxDeployMda")
-            task.mustRunAfter("mxbuild")
 
             task.classpath(extension.mendixVersion.map { e -> "build/modeler/${e}/runtime/launcher/runtimelauncher.jar" } )
             task.jvmArgs(extension.mendixVersion.map { e -> listOf("-DMX_INSTALL_PATH=build/modeler/${e}") } )
