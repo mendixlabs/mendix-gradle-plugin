@@ -34,7 +34,7 @@ enum class Os {
                 return LINUX
             }
 
-            throw RuntimeException("Os ${os} supported")
+            throw RuntimeException("Os ${os} not supported")
         }
     }
 
