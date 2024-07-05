@@ -111,9 +111,6 @@ class MendixGradlePlugin: Plugin<Project> {
 
             task.dependsOn("mxEnsureModeler")
 
-            // always run MxBuild since the mpr file is not the only input file to watch
-            task.outputs.upToDateWhen { false }
-
             task.mendixVersion.set(extension.mendixVersion)
             task.mpr.set(project.layout.projectDirectory.file(extension.mprFileName))
             task.outputPath.set(project.layout.buildDirectory.dir(appBuildDir))

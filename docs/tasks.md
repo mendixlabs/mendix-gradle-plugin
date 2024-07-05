@@ -109,8 +109,11 @@ Parameters:
 
 ## `mxbuild`
 
-Runs `mxbuild(.exe)` for the specified Mendix version and project file. It always produces a MDA file in the folder
+Runs `mxbuild(.exe)` for the specified Mendix version and project file. It produces a MDA file in the folder
 `${project.builddir}/app/`. The execution can be controlled using these parameters.
+
+The `mxbuild` tasks supports incremental builds and uses the state of the MPR file for this. Compiles only
+happen when the MPR file is changed or the mda doesn't exist yet.
 
 Execute
 
