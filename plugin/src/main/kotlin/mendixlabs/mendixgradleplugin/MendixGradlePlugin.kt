@@ -179,8 +179,8 @@ class MendixGradlePlugin: Plugin<Project> {
 
             task.dependsOn("mxEnsureRuntime", "mxGenerateConfig", "mxDeployMda")
 
-            task.classpath(extension.mendixVersion.map { e -> "build/modeler/${e}/runtime/launcher/runtimelauncher.jar" } )
-            task.jvmArgs(extension.mendixVersion.map { e -> listOf("-DMX_INSTALL_PATH=build/modeler/${e}") } )
+            task.classpath(extension.mendixVersion.map { e -> "build/modeler/${e}/runtime/launcher/runtimelauncher.jar" }.get() )
+            task.jvmArgs(extension.mendixVersion.map { e -> listOf("-DMX_INSTALL_PATH=build/modeler/${e}") }.get() )
             task.args(listOf(
                     project.tasks.getByName("mxDeployMda").outputs.files.singleFile.absolutePath,
                     project.tasks.getByName("mxGenerateConfig").outputs.files.singleFile.absolutePath)
