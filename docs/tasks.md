@@ -248,3 +248,8 @@ Execute
 ```bat
 gradlew.bat mxEnsureRuntime
 ```
+
+## mxDumpMpr
+
+Preconfigured task for `mx.exe dump-mpr` on the specified projects MPR file. JSON file is stored
+at `build/mendix/<mpr-name>.json`

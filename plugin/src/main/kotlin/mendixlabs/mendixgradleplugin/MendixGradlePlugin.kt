@@ -11,6 +11,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.JavaExec
 import java.io.File
+import java.util.*
 
 abstract class MxGradlePluginExtension {
     abstract val mendixVersion: Property<String>
@@ -142,6 +143,20 @@ class MendixGradlePlugin: Plugin<Project> {
                     "--output-dir", project.rootDir.absolutePath))
         }
 
+        project.tasks.register<MxCommand>("mxDumpMpr", MxCommand::class.java) { task ->
+            task.group = PLUGIN_GROUP_MX
+            task.description = "Dump MPR to JSON"
+
+            task.dependsOn("mxEnsureModeler")
+            task.outputs.upToDateWhen { false }
+
+            task.tool.set("mx")
+            task.mendixVersion.set(extension.mendixVersion)
+            task.args.set(listOf("dump-mpr", extension.mprFileName.get()))
+            task.outputType.set(OutputType.FILE)
+            task.outputFile.set(project.layout.buildDirectory.file("${appBuildDir}/${extension.mprFileName.get()}".removeSuffix(".mpr").plus(".json")))
+        }
+
         project.tasks.register<GenerateDockerFile>("mxGenerateDockerfile", GenerateDockerFile::class.java) { task ->
             task.group = PLUGIN_GROUP_MX
             task.description = "Generate a Dockerfile for this project."
@@ -252,7 +267,8 @@ class MendixGradlePlugin: Plugin<Project> {
             task.group = PLUGIN_GROUP_MX
             task.description = "Get Runtime if configured version is not available locally."
 
-            val launcher =  File(project.layout.buildDirectory.asFile.get(), "modeler/${extension.mendixVersion.get()}/runtime/launcher/runtimelauncher.jar")
+            val launcher =  File(project.layout.buildDirectory.asFile.get(),
+                    "modeler/${extension.mendixVersion.get()}/runtime/launcher/runtimelauncher.jar")
             if (!launcher.exists()) {
                 task.logger.lifecycle("runtime is not installed")
                 task.dependsOn("mxInternalUnpackRuntime")
