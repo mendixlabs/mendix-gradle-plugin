@@ -132,25 +132,26 @@ Parameters:
 | `looseVersionCheck`     | Boolean | Instructs `mxbuild` not to restrict on the MPRs Mendix version. Defaults to `false`.                                            |
 | `writeErrorsFile`       | Boolean | Instructs `mxbuild` not write errors into a file. When set filename will be `${project.name}-errors.json`. Defaults to `false`. |
 
-## `mxGenerateConfig`
+## `mxWriteConfigs`
 
-Generates a config file that can be used for Mendix 10.11 and higher to start the application. Relies on `mxbuild` to 
-have ran. A generic config file will be created containing the App Constants and Scheduled Events specific for this
-project. See [App Configuration](config.md) for more information.
+Extracts project configuration (Settings -> Configurations) into HOCON files that can be 
+passed to runtime on start. 
 
 Execute:
 
 ```bat
-gradlew.bat mxGenerateConfig
+gradlew.bat mxWriteConfigs
 ```
 
 Parameters:
 
 | Parameter    | Type    | Description                                                                                    |
 |--------------|---------|------------------------------------------------------------------------------------------------|
+| `configNames` | Set<String> | Set of config names that should be exported. When empty all configs are exported.         |
 | `mda`        | String  | Filename mda that is produced by `mxbuild`.                                                    |
-| `templateFile` | String | Provide a different template file to the config file.                                          |
+| `mprAsJson`  | File    | File name to the project in JSON as result of mxDumpMpr.                                       
 | `outputFile` | String | Filename of the config file to be written. Defaults to `app.conf` in the same folder as the MDA. |
+
 
 ## `mxGenerateDockerfile`
 

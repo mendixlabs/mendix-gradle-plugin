@@ -17,9 +17,9 @@ SCRIPT_DIR=$(dirname $0)
 BASE_DIR=$(realpath ${SCRIPT_DIR}/..)
 
 # Process config param
-CONFIG=${BASE_DIR}/etc/app.conf
+CONFIG=${BASE_DIR}/etc/Default.conf
 if [ "$1" != "" ]; then
-    config=$1
+    CONFIG=$1
 fi
 
 # check java

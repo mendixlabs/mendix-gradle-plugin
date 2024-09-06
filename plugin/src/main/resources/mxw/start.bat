@@ -22,7 +22,7 @@ set CFG_PARAM=%~dpnx1
 IF not "%CFG_PARAM%"==""  (
   set CONFIG=%CFG_PARAM%
 ) else (
-  set CONFIG=%BASE_DIR%\etc\app.conf
+  set CONFIG=%BASE_DIR%\etc\DEFAULT.conf
 )
 
 @rem Check if Java is available

@@ -7,11 +7,12 @@ import mendixlabs.mendixgradleplugin.tasks.*
 import org.gradle.api.Project
 import org.gradle.api.Plugin
 import org.gradle.api.distribution.DistributionContainer
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.JavaExec
 import java.io.File
-import java.util.*
 
 abstract class MxGradlePluginExtension {
     abstract val mendixVersion: Property<String>
@@ -148,11 +149,16 @@ class MendixGradlePlugin: Plugin<Project> {
             task.description = "Dump MPR to JSON"
 
             task.dependsOn("mxEnsureModeler")
-            task.outputs.upToDateWhen { false }
 
             task.tool.set("mx")
             task.mendixVersion.set(extension.mendixVersion)
-            task.args.set(listOf("dump-mpr", extension.mprFileName.get()))
+
+            // make a list of providers so that extension.mprFileName evaluates late
+            val args = project.objects.listProperty(String::class.java)
+            args.add("dump-mpr")
+            args.add(extension.mprFileName)
+            task.args.set(args)
+
             task.outputType.set(OutputType.FILE)
             task.outputFile.set(project.layout.buildDirectory.file("${appBuildDir}/${extension.mprFileName.get()}".removeSuffix(".mpr").plus(".json")))
         }
@@ -167,14 +173,17 @@ class MendixGradlePlugin: Plugin<Project> {
         // -------------------------------------------------------------------------------------------------------------
         // Tasks for operations on project
         // -------------------------------------------------------------------------------------------------------------
-        project.tasks.register<GenerateConfigFile>("mxGenerateConfig", GenerateConfigFile::class.java) { task ->
+        project.tasks.register<WriteConfigs>("mxWriteConfigs", WriteConfigs::class.java) { task ->
             task.group = PLUGIN_GROUP_MX
-            task.description = "Generate config file for Mendix 10.11 and higher m2ee-less start."
+            task.description = "Write config files based on configuration in the project MPR"
 
-            task.dependsOn("mxbuild")
+            task.dependsOn("mxDumpMpr")
+            task.mustRunAfter("mxbuild")
 
+            val mprJson = project.tasks.getByName("mxDumpMpr").outputs.files.singleFile
             task.mda.set(project.layout.buildDirectory.file("${appBuildDir}/${project.name}.mda"))
-            task.outputFile.set(project.layout.buildDirectory.file("${appBuildDir}/app.conf"))
+            task.mprAsJson.set(mprJson)
+            task.outputPath.set(project.layout.buildDirectory.dir(appBuildDir))
         }
 
         project.tasks.register<Copy>("mxDeployMda", Copy::class.java) {task ->
@@ -182,6 +191,7 @@ class MendixGradlePlugin: Plugin<Project> {
             task.into(project.layout.buildDirectory.dir("deployment"))
 
             task.dependsOn("mxbuild")
+            task.mustRunAfter("mxWriteConfigs")
 
             task.doLast {
                 project.mkdir(project.layout.buildDirectory.dir("deployment/data/files"))
@@ -192,13 +202,17 @@ class MendixGradlePlugin: Plugin<Project> {
             task.group = PLUGIN_GROUP_MX
             task.description = "Run the Mendix project"
 
-            task.dependsOn("mxEnsureRuntime", "mxGenerateConfig", "mxDeployMda")
+            task.dependsOn("mxEnsureRuntime", "mxWriteConfigs", "mxDeployMda")
 
-            task.classpath(extension.mendixVersion.map { e -> "build/modeler/${e}/runtime/launcher/runtimelauncher.jar" }.get() )
-            task.jvmArgs(extension.mendixVersion.map { e -> listOf("-DMX_INSTALL_PATH=build/modeler/${e}") }.get() )
+            task.classpath(extension.mendixVersion.map { e -> "build/modeler/${e}/runtime/launcher/runtimelauncher.jar" }.get())
+            task.jvmArgs(extension.mendixVersion.map { e -> listOf("-DMX_INSTALL_PATH=build/modeler/${e}") }.get())
+
+            val configFiles = project.layout.buildDirectory.dir(appBuildDir).get().asFile.listFiles { f -> f.isFile && f.name.endsWith(".conf")}
+            val config = configFiles.filter { it.name == "Default.conf" }.first() ?: configFiles.first()
+
             task.args(listOf(
                     project.tasks.getByName("mxDeployMda").outputs.files.singleFile.absolutePath,
-                    project.tasks.getByName("mxGenerateConfig").outputs.files.singleFile.absolutePath)
+                    config.absolutePath)
             )
         }
 
@@ -310,7 +324,7 @@ class MendixGradlePlugin: Plugin<Project> {
                 }
 
                 spec.into("etc") { etcSpec ->
-                    etcSpec.from(project.tasks.getByName("mxGenerateConfig").outputs.files.singleFile)
+                    etcSpec.from(project.tasks.getByName("mxWriteConfigs").outputs.files.singleFile)
                 }
 
                 spec.into("runtime") { runtimeSpec ->
@@ -321,11 +335,11 @@ class MendixGradlePlugin: Plugin<Project> {
         }
 
         project.tasks.named("mxDistZip") { task ->
-            task.dependsOn("mxEnsureRuntime", "mxbuild", "mxStartScripts", "mxGenerateConfig")
+            task.dependsOn("mxEnsureRuntime", "mxbuild", "mxStartScripts", "mxWriteConfigs")
         }
 
         project.tasks.named("installMxDist") { task ->
-            task.dependsOn("mxEnsureRuntime", "mxbuild", "mxStartScripts", "mxGenerateConfig")
+            task.dependsOn("mxEnsureRuntime", "mxbuild", "mxStartScripts", "mxWriteConfigs")
         }
 
     }

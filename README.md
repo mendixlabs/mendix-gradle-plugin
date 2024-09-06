@@ -136,7 +136,7 @@ gradlew.bat mxbuild
 Assumes `mxbuild` is executed.
 
 ```bat
-gradlew.bat mxEnsureRuntime mxGenerateConfig mxDeployMda mxRun
+gradlew.bat mxEnsureRuntime mxWriteConfigs mxDeployMda mxRun
 ```
 
 ### Distribute an app
@@ -144,7 +144,7 @@ gradlew.bat mxEnsureRuntime mxGenerateConfig mxDeployMda mxRun
 Assumes `mxbuild` is executed.
 
 ```bat
-gradlew.bat mxEnsureRuntime mxGenerateConfig mxStartScripts mxDistZip
+gradlew.bat mxEnsureRuntime mxWriteConfigs mxStartScripts mxDistZip
 ```
 
 To see the content of the distribution browse to `build\distributions` and 
