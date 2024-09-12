@@ -198,11 +198,11 @@ gradlew.bat mxRun
 
 Parameters: See [JavaExec](https://docs.gradle.org/8.5/dsl/org.gradle.api.tasks.JavaExec.html)
 
-| Parameter   | Type    | Description                                                        |
-|-------------|---------|--------------------------------------------------------------------|
-| `classpath` | String  | Set to `runtimelauncher.jar` from the Runtime distribution.        |
-| `jvmArgs`   | String | Defines JVM arguments. Needs to have `MX_INSTALL_PATH` at minimal. |
-| `args`      | String | Passed the MDA deployment folder and config file.                  |
+| Parameter   | Type    | Description                                                                  |
+|-------------|---------|------------------------------------------------------------------------------|
+| `classpath` | String  | Set to `runtimelauncher.jar` from the Runtime distribution.                  |
+| `jvmArgs`   | String | Defines JVM arguments. Needs to have `MX_INSTALL_PATH` at minimal.           |
+| `args`      | String | Passed the MDA deployment folder and config file. Defaults to Defaults.conf. |
 
 
 ## `mxStartScripts`

@@ -7,9 +7,7 @@ import mendixlabs.mendixgradleplugin.tasks.*
 import org.gradle.api.Project
 import org.gradle.api.Plugin
 import org.gradle.api.distribution.DistributionContainer
-import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.JavaExec
 import java.io.File
@@ -190,8 +188,8 @@ class MendixGradlePlugin: Plugin<Project> {
             task.from(project.zipTree(project.layout.buildDirectory.file("${appBuildDir}/${project.name}.mda")))
             task.into(project.layout.buildDirectory.dir("deployment"))
 
-            task.dependsOn("mxbuild")
-            task.mustRunAfter("mxWriteConfigs")
+            task.dependsOn("mxWriteConfigs")
+            task.mustRunAfter("mxbuild")
 
             task.doLast {
                 project.mkdir(project.layout.buildDirectory.dir("deployment/data/files"))
@@ -207,13 +205,12 @@ class MendixGradlePlugin: Plugin<Project> {
             task.classpath(extension.mendixVersion.map { e -> "build/modeler/${e}/runtime/launcher/runtimelauncher.jar" }.get())
             task.jvmArgs(extension.mendixVersion.map { e -> listOf("-DMX_INSTALL_PATH=build/modeler/${e}") }.get())
 
-            val configFiles = project.layout.buildDirectory.dir(appBuildDir).get().asFile.listFiles { f -> f.isFile && f.name.endsWith(".conf")}
-            val config = configFiles.filter { it.name == "Default.conf" }.first() ?: configFiles.first()
-
-            task.args(listOf(
-                    project.tasks.getByName("mxDeployMda").outputs.files.singleFile.absolutePath,
-                    config.absolutePath)
+            val args = listOf(
+                project.tasks.getByName("mxDeployMda").outputs.files.singleFile.absolutePath,
+                project.layout.buildDirectory.file(appBuildDir + "/Default.conf").get().asFile.absolutePath
             )
+            task.args(args)
+
         }
 
         // -------------------------------------------------------------------------------------------------------------
