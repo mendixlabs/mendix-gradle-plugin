@@ -101,7 +101,7 @@ abstract class WriteConfigs : DefaultTask() {
             effectiveSettings["DatabaseJdbcUrl"] = CustomSetting("", "", "DatabaseJdbcUrl", config.databaseUrl)
         }
 
-        effectiveSettings["MyScheduledEvents"] = CustomSetting("", "", "MyScheduledEvents", "[" + metadata.scheduledEvents.map { it.name }.joinToString(",") + "]")
+        effectiveSettings["MyScheduledEvents"] = CustomSetting("", "", "MyScheduledEvents",  metadata.scheduledEvents.map { it.name }.joinToString(","))
         effectiveSettings["ScheduledEventExecution"] = CustomSetting("", "", "ScheduledEventExecution", "SPECIFIED")
         return effectiveSettings
     }
@@ -146,8 +146,21 @@ abstract class WriteConfigs : DefaultTask() {
         settings.toSortedMap().forEach { e ->
             val envVarName = e.value.name.replace(".", "_").uppercase()
 
-            configBuffer.append("    ").append(e.key).append(" = \"").append(e.value.value).appendLine("\"")
-            configBuffer.append("    ").append(e.key).append(" = \${?MX_RUNTIME_PARAMS_").append(envVarName).append("}")
+            // if json parson succeeds don't escape
+            var isJsonObject = false;
+            try {
+                val json = JsonParser.parseString(e.value.value)
+                isJsonObject = json.isJsonObject || json.isJsonArray
+            } catch (ex: Exception) {
+            }
+
+            if (isJsonObject) {
+                configBuffer.append("    \"").append(e.key).append("\" = ").appendLine(e.value.value);
+            } else {
+                configBuffer.append("    \"").append(e.key).append("\" = \"").append(e.value.value).appendLine("\"")
+            }
+
+            configBuffer.append("    \"").append(e.key).append("\" = \${?MX_RUNTIME_PARAMS_").append(envVarName).appendLine("}")
             configBuffer.appendLine()
         }
 
@@ -184,8 +197,7 @@ logging = [{
     type = console
     autoSubscribe = INFO
     levels = {}
-}]
-        """)
+}]      """)
         configBuffer.appendLine("logging = \${?MX_LOGGING}")
 
         FileWriter(File(outputPath.asFile.get(), config.name + ".conf")).use { fw ->
