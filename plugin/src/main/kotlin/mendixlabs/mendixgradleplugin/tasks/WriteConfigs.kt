@@ -93,6 +93,7 @@ abstract class WriteConfigs : DefaultTask() {
         // but some values are provided as dedicated input field in Studio Pro,
         // these have preference
         val effectiveSettings = config.customSettings.associateBy { it.name }.toMutableMap()
+        effectiveSettings["ApplicationRootUrl"] = CustomSetting("", "", "ApplicationRootUrl", config.applicationRootUrl)
         effectiveSettings["DTAPMode"] = CustomSetting("", "", "DTAPMode", "D")
         effectiveSettings["DatabaseType"] = CustomSetting("", "", "DatabaseType", config.databaseType)
         if (config.databaseType == "Hsqldb") {
@@ -137,7 +138,7 @@ abstract class WriteConfigs : DefaultTask() {
         configBuffer.appendLine()
         configBuffer.appendLine("runtime {")
         configBuffer.appendLine("  http {")
-        configBuffer.append("    address = [").append(if(config.runtimePortOnlyLocal) "127.0.0.1" else "0.0.0.0").appendLine("]")
+        configBuffer.append("    addresses = [\"").append(if(config.runtimePortOnlyLocal) "127.0.0.1" else "0.0.0.0").appendLine("\"]")
         configBuffer.append("    port = ").appendLine(config.runtimePortNumber)
         configBuffer.appendLine("    port = \${?MX_RUNTIME_HTTP_PORT}")
         configBuffer.appendLine("  }")
