@@ -134,13 +134,24 @@ abstract class WriteConfigs : DefaultTask() {
         configBuffer.appendLine("admin {")
         configBuffer.appendLine("  adminPassword = \"verysecret1\"")
         configBuffer.appendLine("  adminPassword = \${?MX_ADMIN_PASSWORD}")
+
+        configBuffer.append("  addresses = [\"").append(if(config.adminPortOnlyLocal) "127.0.0.1" else "0.0.0.0").appendLine("\"]")
+        configBuffer.appendLine("  addresses = \${?MX_ADMIN_ADDRESSES}")
+        configBuffer.append("  port = ").appendLine(config.adminPortNumber)
+        configBuffer.appendLine("  port = \${?MX_ADMIN_PORT}")
+
+        configBuffer.appendLine("  monitoringPassword = \${?MX_ADMIN_MONITORINGPASSWORD}")
+
         configBuffer.appendLine("}")
         configBuffer.appendLine()
         configBuffer.appendLine("runtime {")
         configBuffer.appendLine("  http {")
+
         configBuffer.append("    addresses = [\"").append(if(config.runtimePortOnlyLocal) "127.0.0.1" else "0.0.0.0").appendLine("\"]")
+        configBuffer.appendLine("    addresses = \${?MX_RUNTIME_HTTP_ADDRESSES}")
         configBuffer.append("    port = ").appendLine(config.runtimePortNumber)
         configBuffer.appendLine("    port = \${?MX_RUNTIME_HTTP_PORT}")
+
         configBuffer.appendLine("  }")
         configBuffer.appendLine()
         configBuffer.appendLine("  params {")
