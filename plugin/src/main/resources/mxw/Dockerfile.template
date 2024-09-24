@@ -13,4 +13,4 @@ EXPOSE 8080
 
 USER nobody
 
-CMD ["java", "-DMX_INSTALL_PATH=/opt/app", "-jar", "/opt/app/runtime/launcher/runtimelauncher.jar", "/opt/app/deployment", "/opt/app/etc/app.conf"]
+CMD ["java", "-DMX_INSTALL_PATH=/opt/app", "-jar", "/opt/app/runtime/launcher/runtimelauncher.jar", "/opt/app/deployment", "/opt/app/etc/Default.conf"]
