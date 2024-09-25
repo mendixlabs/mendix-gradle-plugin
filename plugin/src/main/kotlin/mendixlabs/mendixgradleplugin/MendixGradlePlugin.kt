@@ -150,6 +150,7 @@ class MendixGradlePlugin: Plugin<Project> {
 
             task.tool.set("mx")
             task.mendixVersion.set(extension.mendixVersion)
+            task.watch.from(project.layout.projectDirectory.file(extension.mprFileName))
 
             // make a list of providers so that extension.mprFileName evaluates late
             val args = project.objects.listProperty(String::class.java)
