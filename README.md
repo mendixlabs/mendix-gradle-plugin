@@ -117,7 +117,8 @@ and distribution tasks as input.
 
 ## Usage
 
-Use `gradlew.bat tasks` to view which [tasks](docs/tasks.md) are available.
+Use `gradlew.bat tasks` to view which [tasks](docs/tasks.md) are available. It 
+is also possible to specify [custom tasks](docs/mxcommand.md).
 
 Note: task dependencies are not set for `mxbuild`. Mxbuild takes quite some 
 time and this plugin doesn't contain a good way yet to determine if the 

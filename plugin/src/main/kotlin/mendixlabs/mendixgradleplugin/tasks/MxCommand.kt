@@ -3,10 +3,12 @@ package mendixlabs.mendixgradleplugin.tasks
 import mendixlabs.mendixgradleplugin.ToolFinderBuilder
 import org.apache.groovy.json.internal.IO
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
@@ -50,6 +52,12 @@ abstract class MxCommand: DefaultTask() {
             description = "Argument list for mx(.exe). You can provide multiple '--arg' flags."
     )
     abstract val args: ListProperty<String>
+
+    // watch is a trick to specify which files need to be monitored for task execution
+    // since this generic task and possible files will be passed via args
+    // to always run a task use `outputs.upToDateWhen { false }` in the configuration
+    @get:InputFiles
+    abstract val watch: ConfigurableFileCollection
 
     @TaskAction
     fun runTask() {
