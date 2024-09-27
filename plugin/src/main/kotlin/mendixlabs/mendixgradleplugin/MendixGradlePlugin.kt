@@ -52,16 +52,6 @@ class MendixGradlePlugin: Plugin<Project> {
 
     fun registerTasks(project: Project) {
         val extension = project.extensions.getByType<MxGradlePluginExtension>(MxGradlePluginExtension::class.java)
-//        val effectiveMendixVersion = getEffectiveMendixVersion(project);
-
-//        println("Effective Mendix version: ${extension.mendixVersion}")
-//        project.logger.info("Effective Mendix version: ${extension.mendixVersion}")
-
-//        // test is mendixVersion is configured, that is the minimal to work
-//        if (effectiveMendixVersion.isEmpty()) {
-//            project.logger.info("MendixVersion not defined, skip register tasks for Mendix Gradle Plugin")
-//            return
-//        }
 
         project.tasks.create("showExtensionConfig") {
             it.doLast {
