@@ -25,10 +25,13 @@ abstract class MxGradlePluginExtension {
 const val PLUGIN_GROUP_MX = "mendix"
 
 /**
- * A simple 'hello world' plugin.
+ * Mendix Gradle Plugin
  *
- * https://betterprogramming.pub/understanding-gradle-tasks-417d6f5e13f4
- * https://tomgregory.com/gradle/all-about-the-gradle-task-graph/
+ * Interact with your Mendix project using Gradle commands. The
+ * plugin handles getting the correct version installed on the
+ * machine when not available and can build a self-contained
+ * distribution.
+ *
  */
 @Suppress("unused")
 class MendixGradlePlugin: Plugin<Project> {
