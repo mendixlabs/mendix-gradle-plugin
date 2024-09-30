@@ -187,8 +187,7 @@ class MendixGradlePlugin: Plugin<Project> {
             task.group = PLUGIN_GROUP_MX
             task.description = "Write config files based on configuration in the project MPR"
 
-            task.dependsOn("mxDumpMpr")
-            task.mustRunAfter("mxbuild")
+            task.dependsOn("mxbuild", "mxDumpMpr")
 
             val mprJson = project.tasks.getByName("mxDumpMpr").outputs.files.singleFile
             task.mda.set(project.layout.buildDirectory.file("${appBuildDir}/${project.name}.mda"))
@@ -200,8 +199,7 @@ class MendixGradlePlugin: Plugin<Project> {
             task.from(project.zipTree(project.layout.buildDirectory.file("${appBuildDir}/${project.name}.mda")))
             task.into(project.layout.buildDirectory.dir("deployment"))
 
-            task.dependsOn("mxWriteConfigs")
-            task.mustRunAfter("mxbuild")
+            task.dependsOn("mxbuild", "mxWriteConfigs")
 
             task.doLast {
                 project.mkdir(project.layout.buildDirectory.dir("deployment/data/files"))
@@ -240,7 +238,6 @@ class MendixGradlePlugin: Plugin<Project> {
 
         project.tasks.register<Copy>("mxInternalUnpackMxbuild", Copy::class.java) { task ->
             task.dependsOn("mxInternalDownloadMxbuild")
-            task.mustRunAfter("mxInternalDownloadMxbuild")
 
             val mxbuildDistribtionFile = project.tasks.getByName("mxInternalDownloadMxbuild").outputs.files.singleFile
             task.from(project.tarTree(project.resources.gzip(mxbuildDistribtionFile)))
@@ -279,7 +276,8 @@ class MendixGradlePlugin: Plugin<Project> {
 
         project.tasks.register<Copy>("mxInternalUnpackRuntime", Copy::class.java) { task ->
             task.dependsOn("mxInternalDownloadRuntime")
-            task.mustRunAfter("mxInternalDownloadRuntime")
+
+            task.mustRunAfter("mxInternalUnpackMxbuild")
 
             val runtimeDistribtionFile = project.tasks.getByName("mxInternalDownloadRuntime").outputs.files.singleFile
             task.from(project.tarTree(project.resources.gzip(runtimeDistribtionFile)))
