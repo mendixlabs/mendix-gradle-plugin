@@ -3,8 +3,8 @@ package mendixlabs.mendixgradleplugin.tasks
 import mendixlabs.mendixgradleplugin.Os
 import mendixlabs.mendixgradleplugin.ToolFinderBuilder
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.provider.Property
@@ -13,13 +13,10 @@ import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.OutputFile
-import org.gradle.api.tasks.OutputFiles
 import org.gradle.api.tasks.TaskAction
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
-import java.util.concurrent.TimeUnit
 
 abstract class Mxbuild : DefaultTask() {
 
@@ -40,6 +37,11 @@ abstract class Mxbuild : DefaultTask() {
 
     @get:Input
     abstract val writeErrorsFile: Property<Boolean>
+
+    // project files are used by Gradle to track incremental
+    // builds and are not used in the task itself
+    @get:InputFiles
+    abstract val projectFiles: ConfigurableFileCollection
 
     @get:OutputDirectory
     abstract val outputPath: DirectoryProperty

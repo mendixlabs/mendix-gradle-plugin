@@ -123,13 +123,14 @@ gradlew.bat mxbuild
 
 Parameters:
 
-| Parameter               | Type    | Description                                                                                                                     |
-|-------------------------|---------|---------------------------------------------------------------------------------------------------------------------------------|
-| `mpr`                   | String  | Filename of the projects `.mpr` file. Defaults to `mprFilename` from `build.gradle`.                                            |
-| `mendixVersion`         | String  | Mendix version used to run the command. Defaults to `mendixVersion` from `build.gradle`.                                        |
-| `generateJavaDebugInfo` | Boolean | Instructs `mxbuild` to compile with Java debug info. Defaults to `false`.                                                       |
-| `generateSbom`          | Boolean | Instructs `mxbuild` to create a SBOM. When set the filename will be `${project.name}-sbom.json`. Defaults to `false`.           |
-| `looseVersionCheck`     | Boolean | Instructs `mxbuild` not to restrict on the MPRs Mendix version. Defaults to `false`.                                            |
+| Parameter               | Type    | Description                                                                                                                 |
+|-------------------------|---------|-----------------------------------------------------------------------------------------------------------------------------|
+| `mpr`                   | String  | Filename of the projects `.mpr` file. Defaults to `mprFilename` from `build.gradle`.                                        |
+| `mendixVersion`         | String  | Mendix version used to run the command. Defaults to `mendixVersion` from `build.gradle`.                                    |
+| `generateJavaDebugInfo` | Boolean | Instructs `mxbuild` to compile with Java debug info. Defaults to `false`.                                                   |
+| `generateSbom`          | Boolean | Instructs `mxbuild` to create a SBOM. When set the filename will be `${project.name}-sbom.json`. Defaults to `false`.       |
+| `looseVersionCheck`     | Boolean | Instructs `mxbuild` not to restrict on the MPRs Mendix version. Defaults to `false`.                                        |
+| `projectFiles`          | File collection | Specifies which files to watch to support incremental builds of the MDA.                                            | 
 | `writeErrorsFile`       | Boolean | Instructs `mxbuild` not write errors into a file. When set filename will be `${project.name}-errors.json`. Defaults to `false`. |
 
 ## `mxWriteConfigs`

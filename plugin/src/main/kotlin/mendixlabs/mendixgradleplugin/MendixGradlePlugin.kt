@@ -106,6 +106,24 @@ class MendixGradlePlugin: Plugin<Project> {
 
             task.mendixVersion.set(extension.mendixVersion)
             task.mpr.set(project.layout.projectDirectory.file(extension.mprFileName))
+
+            // watch these files and folders to make mxbuild incremental
+            // file list based on Mendix 10
+            task.projectFiles.from(
+                    project.layout.projectDirectory.files(
+                            extension.mprFileName.get(),
+                            "javascriptsource",
+                            "javasource",
+                            "mlsource",
+                            "modules",
+                            "ressources",
+                            "templates",
+                            "theme",
+                            "themesource",
+                            "userlib",
+                            "widgets"
+                    )
+            )
             task.outputPath.set(project.layout.buildDirectory.dir(appBuildDir))
 
             task.doLast {
