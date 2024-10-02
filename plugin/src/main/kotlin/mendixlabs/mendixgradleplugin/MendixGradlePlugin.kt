@@ -170,7 +170,7 @@ class MendixGradlePlugin: Plugin<Project> {
             task.args.set(args)
 
             task.outputType.set(OutputType.FILE)
-            task.outputFile.set(project.layout.buildDirectory.file("${appBuildDir}/${extension.mprFileName.get()}".removeSuffix(".mpr").plus(".json")))
+            task.outputFile.set(project.layout.buildDirectory.file("${appBuildDir}/${project.name}.json"))
         }
 
         project.tasks.register<GenerateDockerFile>("mxGenerateDockerfile", GenerateDockerFile::class.java) { task ->
