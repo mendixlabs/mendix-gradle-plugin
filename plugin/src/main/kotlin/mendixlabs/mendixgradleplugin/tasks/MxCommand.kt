@@ -59,6 +59,10 @@ abstract class MxCommand: DefaultTask() {
     @get:InputFiles
     abstract val watch: ConfigurableFileCollection
 
+    init {
+        outputType.convention(OutputType.CONSOLE)
+    }
+
     @TaskAction
     fun runTask() {
         val toolFinder = ToolFinderBuilder()
