@@ -82,9 +82,6 @@ abstract class CDNDownload : DefaultTask() {
 
         BufferedInputStream(URL(url).openStream()).use { bis ->
             FileOutputStream(dest).use { file ->
-//                bis.copyTo(file, 1024)
-
-//                val chars = listOf("-", "\\", "|", "/")
                 val bufferSize = 64 * 1024
                 var bytesCopied: Long = 0
                 val buffer = ByteArray(bufferSize)
