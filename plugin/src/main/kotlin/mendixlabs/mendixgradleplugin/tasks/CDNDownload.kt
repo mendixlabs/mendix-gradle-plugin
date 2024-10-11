@@ -45,19 +45,13 @@ abstract class CDNDownload : DefaultTask() {
     abstract val mendixVersion: Property<String>
 
     @get:Input
-    private var cdnLocation: String = "https://cdn.mendix.com/runtime"
+    abstract val cdnLocation: Property<String>
 
-    fun setCdnLocation(location: String) {
-        if (location.endsWith("/")) {
-            cdnLocation = location.substring(0, location.length - 2)
-        } else {
-            cdnLocation = location
-        }
-    }
+    @get:OutputFile
+    abstract val dest : RegularFileProperty
 
-    @Input
-    fun getCdnLocation(): String {
-        return cdnLocation
+    init {
+        cdnLocation.convention("https://cdn.mendix.com/runtime")
     }
 
     @Internal
@@ -65,13 +59,10 @@ abstract class CDNDownload : DefaultTask() {
         return constructMxbuildFilename(distribution.get(), mendixVersion.get())
     }
 
-    @get:OutputFile
-    abstract val dest : RegularFileProperty
-
     @TaskAction
     fun runTask() {
         logger.lifecycle("Fetching ${getFilename()}")
-        download("${cdnLocation}/${getFilename()}", dest.get().asFile)
+        download("${cdnLocation.get()}/${getFilename()}", dest.get().asFile)
     }
 
     fun download(url: String, dest: File) {
