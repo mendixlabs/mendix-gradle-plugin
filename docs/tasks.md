@@ -34,6 +34,23 @@ Execute
 gradlew.bat mxGetVersion
 ```
 
+## `mxGetVersions`
+
+Lists available Mendix versions.
+
+Execute
+
+```
+gradlew.bat mxListVersions
+```
+
+Parameters:
+
+| Parameter     | Type      | Description                       |
+|---------------|-----------|-----------------------------------|
+| `listingFile` | String    | Location of `listing.txt` on CDN. |
+
+
 ## `mxInit`
 
 Creates a new project using `mx(.exe)` using the specified Mendix version and project name from `build.gradle`.

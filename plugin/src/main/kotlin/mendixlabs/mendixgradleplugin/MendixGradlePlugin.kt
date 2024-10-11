@@ -73,6 +73,11 @@ class MendixGradlePlugin: Plugin<Project> {
             task.mprFilename.set(project.layout.projectDirectory.file(extension.mprFileName))
         }
 
+        project.tasks.register<ListVersions>("mxListVersions", ListVersions::class.java) { task ->
+            task.group = PLUGIN_GROUP_MX
+            task.description = "List available Mendix versions"
+        }
+
         // -------------------------------------------------------------------------------------------------------------
         // Wrap mx tooling
         // -------------------------------------------------------------------------------------------------------------
