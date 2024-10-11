@@ -41,15 +41,16 @@ Lists available Mendix versions.
 Execute
 
 ```
-gradlew.bat mxListVersions
+gradlew.bat mxListVersions --filter="^10\." --onlyLastPatch
 ```
 
 Parameters:
 
 | Parameter     | Type      | Description                       |
 |---------------|-----------|-----------------------------------|
+| `filter` | String | Regex to filter the versions list. |
 | `listingFile` | String    | Location of `listing.txt` on CDN. |
-
+| `onlyLastPatch` | Boolean | When true only the last patch version of major.minor is returned. |
 
 ## `mxInit`
 
