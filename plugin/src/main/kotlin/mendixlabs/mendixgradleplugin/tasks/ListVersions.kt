@@ -79,10 +79,10 @@ abstract class ListVersions : DefaultTask() {
         val preRelease = if (mainAndPreRelease.size > 1) mainAndPreRelease[1] else null
 
         return Semver(
-                major = mainParts[0].toInt(),
-                minor = mainParts[1].toInt(),
-                patch = mainParts[2].toInt(),
-                build = mainParts[3].toInt(),
+                major = if (mainParts.size >= 1) mainParts[0].toInt() else 0,
+                minor = if (mainParts.size >= 2) mainParts[1].toInt() else 0,
+                patch = if (mainParts.size >= 3) mainParts[2].toInt() else 0,
+                build = if (mainParts.size >= 4) mainParts[3].toInt() else 0,
                 preRelease = preRelease
         )
     }
