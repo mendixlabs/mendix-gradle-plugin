@@ -50,7 +50,12 @@ abstract class ListVersions : DefaultTask() {
         // filter the list
         var regex : Regex? = null
         if (filter.isPresent && !filter.get().isEmpty()) {
-            regex = Regex(filter.get())
+            var filterStr = filter.get()
+            if (!filterStr.endsWith(".")) {
+                filterStr += "."
+            }
+            filterStr = "^" + filterStr.replace(".", "\\.")
+            regex = Regex(filterStr)
         }
 
         val majorMinorRegex = Regex("""([0-9]*)\.([0-9]*)""")

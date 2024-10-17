@@ -36,20 +36,24 @@ gradlew.bat mxGetVersion
 
 ## `mxGetVersions`
 
-Lists available Mendix versions.
+Lists available Mendix versions. 
+
+The command allows to set a filter which is a prefix filter. E.g. `10` or `10.` will
+return all MX 10.x.x.x versions. Filtering with `10.6` will return all MX 10.6.x.x 
+versions.
 
 Execute
 
 ```
-gradlew.bat mxListVersions --filter="^10\." --onlyLastPatch
+gradlew.bat mxListVersions --filter="10." --onlyLastPatch
 ```
 
 Parameters:
 
-| Parameter     | Type      | Description                       |
-|---------------|-----------|-----------------------------------|
-| `filter` | String | Regex to filter the versions list. |
-| `listingFile` | String    | Location of `listing.txt` on CDN. |
+| Parameter     | Type      | Description                                              |
+|---------------|-----------|----------------------------------------------------------|
+| `filter` | String | Version string prefix filter.                            |
+| `listingFile` | String    | Location of `listing.txt` on CDN.                        |
 | `onlyLastPatch` | Boolean | When true only the last patch version of major.minor is returned. |
 
 ## `mxInit`
