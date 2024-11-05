@@ -64,6 +64,7 @@ abstract class ListVersions : DefaultTask() {
                 .map { e -> e.removePrefix("runtime/mendix-")}
                 .map { e -> e.removeSuffix(".tar.gz")}
                 .filter { e -> regex == null || regex.find(e)?.value?.isEmpty() == false }
+                .sortedWith(compareBy({ parseSemver(it) }, { it }))
                 .fold(mutableListOf<String>()) { list, e ->
                     if (onlyLastPatch.get() && list.size > 0) {
                         val last = majorMinorRegex.find(list.last())
@@ -74,7 +75,6 @@ abstract class ListVersions : DefaultTask() {
                     }
                     list
                 }
-                .sortedWith(compareBy({ parseSemver(it) }, { it }))
                 .forEach { e -> logger.lifecycle(e) }
     }
 
