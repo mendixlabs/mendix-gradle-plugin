@@ -4,8 +4,8 @@
  * This generated file contains a sample Gradle plugin project to get you started.
  * For more details on writing Custom Plugins, please refer to https://docs.gradle.org/8.5/userguide/custom_plugins.html in the Gradle documentation.
  */
-group = "mendixlabs.mendix-gradle-plugin"
-version = "0.0.3"
+group = "com.mendixlabs.mendix-gradle-plugin"
+version = "0.0.4"
 
 plugins {
     // Apply the Java Gradle plugin development plugin to add support for developing Gradle plugins
@@ -44,7 +44,7 @@ gradlePlugin {
     vcsUrl = "https://github.com/mendixlabs/mendix-gradle-plugin.git"
 
     val mendixGradlePlugin by plugins.creating {
-        id = "mendixlabs.mendix-gradle-plugin"
+        id = "com.mendixlabs.mendix-gradle-plugin"
         displayName = "Mendix Gradle Plugin"
         description = "A plugin that helps you to interact with Mendix tools in a project."
         tags = listOf("mendix", "project", "mxbuild")
