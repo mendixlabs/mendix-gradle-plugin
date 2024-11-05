@@ -34,7 +34,7 @@ Execute
 gradlew.bat mxGetVersion
 ```
 
-## `mxGetVersions`
+## `mxListVersions`
 
 Lists available Mendix versions. 
 
