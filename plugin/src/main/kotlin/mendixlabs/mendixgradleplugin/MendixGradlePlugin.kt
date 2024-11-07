@@ -336,10 +336,9 @@ class MendixGradlePlugin: Plugin<Project> {
                 }
 
                 spec.into("etc") { etcSpec ->
-                    etcSpec.from(
-                            project.tasks.getByName("mxWriteConfigs")
-                                .outputs.files.singleFile.listFiles { f -> f.name.endsWith(".conf") }
-                    )
+                    etcSpec.from(project.tasks.getByName("mxWriteConfigs").outputs.files.singleFile) {
+                        it.include { f -> f.file.name.endsWith(".conf")}
+                    }
                 }
 
                 spec.into("runtime") { runtimeSpec ->
