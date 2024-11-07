@@ -26,16 +26,12 @@ IF not "%CFG_PARAM%"==""  (
 )
 
 @rem Check if Java is available
+set JAVA=java
 if defined JAVA_HOME (
     set JAVA=%JAVA_HOME%\bin\java
 )
-if not exist %JAVA% (
-  echo "java can't be found on JAVA_HOME"
-  exit /b 1
-)
-goto endjavacheck
 
-java -version >NUL 2>&1
+"%JAVA%" -version >NUL 2>&1
 if %ERRORLEVEL% neq 0 (
     echo "java can't be found"
     exit /b 1
