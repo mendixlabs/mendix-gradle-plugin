@@ -15,7 +15,7 @@ plugins {
     alias(libs.plugins.jvm)
 
     id("maven-publish")
-    id("com.gradle.plugin-publish") version "1.2.1"
+    id("com.gradle.plugin-publish") version "1.3.1"
 }
 
 java {
@@ -29,8 +29,8 @@ repositories {
 }
 
 dependencies {
-    implementation("org.xerial:sqlite-jdbc:3.45.3.0")
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("org.xerial:sqlite-jdbc:3.49.1.0")
+    implementation("com.google.code.gson:gson:2.13.0")
 //    implementation("de.undercouch.download:de.undercouch.download.gradle.plugin:5.5.0")
 
     // Use the Kotlin JUnit 5 integration.
