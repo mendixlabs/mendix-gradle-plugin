@@ -68,9 +68,7 @@ class ToolFinderBuilder {
 
         toolFinder = NoToolFounder(mendixVersion)
         toolFinder = DownloadToolFinder(mendixVersion, project, toolFinder)
-        if (Os.current() == Os.WIN) {
-            toolFinder = WinToolFinder(mendixVersion, toolFinder)
-        }
+        toolFinder = WinToolFinder(mendixVersion, toolFinder)
         return toolFinder
     }
 
@@ -81,11 +79,19 @@ class WinToolFinder(version: String, val fallback: ToolFinder): ToolFinder {
     private val modelerLocation = "C:/Program Files/Mendix/${version}/modeler"
 
     override fun isModelerInstalled(): Boolean {
+        if (Os.current() != Os.WIN) {
+            return fallback.isModelerInstalled()
+        }
+
         val modelerDir = File(modelerLocation)
         return if (modelerDir.isDirectory) true else fallback.isModelerInstalled()
     }
 
     override fun getToolLocation(tool: String): String {
+        if (Os.current() != Os.WIN) {
+            return fallback.getToolLocation(tool)
+        }
+
         val filename = if (!tool.endsWith(".exe")) "${tool}.exe" else tool
         val file = File("${modelerLocation}/${filename}")
         if (file.exists()) {
