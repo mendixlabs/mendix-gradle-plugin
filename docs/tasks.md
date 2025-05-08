@@ -1,8 +1,9 @@
 # Tasks
 
 These are the tasks available in the plugin. Run `gradlew.bat tasks` to get a short description. Customizing tasks can 
-be done by reconfiguring them in the Gradle build file like the following example. Change `mxbuild` for the task that 
-is configured. This document described for every task the possible parameters.
+be done by reconfiguring them in the Gradle build file. The following examples changes the `mxbuild` task. This 
+document described for every task the possible parameters. For extension parameters refer to 
+[Extension Configuration](extension.md).
 
 ```groovy
 tasks.named("mxbuild") {
@@ -10,10 +11,6 @@ tasks.named("mxbuild") {
    generateSbom = true
 }
 ```
-
-Any tasks that accepts `mendixVersion` can be overwritten with a project parameter `-PmendixVersion=version` on the
-command line.  
-
 
 ## `mxGetVersion`
 

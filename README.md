@@ -97,6 +97,8 @@ mendix {
 }
 ```
 
+See [Extension configuration](docs/extension.md) for plugin configuration details.
+
 For a new project init the project with
 
 ```bat

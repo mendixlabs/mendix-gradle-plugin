@@ -10,11 +10,11 @@ import org.gradle.api.distribution.DistributionContainer
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.JavaExec
-import java.io.File
 
 abstract class MxGradlePluginExtension {
     abstract val mendixVersion: Property<String>
     abstract val mprFileName: Property<String>
+    abstract val installPath: Property<String>
 
     init {
         mprFileName.convention("App.mpr")
@@ -49,19 +49,15 @@ class MendixGradlePlugin: Plugin<Project> {
             if (p.hasProperty("mendixVersion")) {
                 extension.mendixVersion.set(p.properties.get("mendixVersion").toString())
             }
+            if (p.hasProperty("mendixInstallPath")) {
+                extension.installPath.set(p.properties.get("mendixInstallPath").toString())
+            }
         }
 
     }
 
     fun registerTasks(project: Project) {
         val extension = project.extensions.getByType<MxGradlePluginExtension>(MxGradlePluginExtension::class.java)
-
-        project.tasks.create("showExtensionConfig") {
-            it.doLast {
-                println("Mendix Version: ${extension.mendixVersion.get()}")
-            }
-        }
-
 
         // -------------------------------------------------------------------------------------------------------------
         // Project helpers
@@ -293,9 +289,11 @@ class MendixGradlePlugin: Plugin<Project> {
             task.group = PLUGIN_GROUP_MX
             task.description = "Get Runtime if configured version is not available locally."
 
-            val launcher =  File(project.layout.buildDirectory.asFile.get(),
-                    "modeler/${extension.mendixVersion.get()}/runtime/launcher/runtimelauncher.jar")
-            if (!launcher.exists()) {
+            val toolFinder = ToolFinderBuilder()
+                .withMendixVersion(extension.mendixVersion.get())
+                .withProject(project)
+                .build();
+            if (!toolFinder.isRuntimeInstalled()) {
                 task.logger.lifecycle("runtime is not installed")
                 task.dependsOn("mxInternalUnpackRuntime")
                 task.mustRunAfter("mxInternalUnpackRuntime")
@@ -342,7 +340,13 @@ class MendixGradlePlugin: Plugin<Project> {
                 }
 
                 spec.into("runtime") { runtimeSpec ->
-                    val runtimeDir = extension.mendixVersion.map { e -> project.layout.buildDirectory.dir("modeler/${e}/runtime") }
+                    val runtimeDir = extension.mendixVersion.map { version ->
+                        val toolFinder = ToolFinderBuilder()
+                            .withMendixVersion(version)
+                            .withProject(project)
+                            .build()
+                        toolFinder.getRuntimeLocation()
+                    }
                     runtimeSpec.from(runtimeDir)
                 }
             }
@@ -356,6 +360,7 @@ class MendixGradlePlugin: Plugin<Project> {
             task.dependsOn("mxEnsureRuntime", "mxbuild", "mxStartScripts", "mxWriteConfigs")
         }
 
+        listOf("mxDistTar", "startScripts").forEach { e -> project.tasks.named(e) { task -> task.enabled = false} }
     }
 
 }

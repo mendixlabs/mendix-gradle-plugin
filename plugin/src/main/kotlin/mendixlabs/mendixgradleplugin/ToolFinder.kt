@@ -1,6 +1,7 @@
 package mendixlabs.mendixgradleplugin;
 
 import org.gradle.api.Project
+import org.gradle.api.logging.Logger
 import java.io.File
 
 enum class Arch {
@@ -41,6 +42,8 @@ enum class Os {
 }
 
 interface ToolFinder {
+    fun isRuntimeInstalled(): Boolean
+    fun getRuntimeLocation(): String
     fun isModelerInstalled(): Boolean
     fun getToolLocation(tool: String): String
     fun getMxLocation(): String
@@ -52,6 +55,7 @@ class ToolFinderBuilder {
 
     lateinit private var mendixVersion: String
     lateinit private var project: Project
+    private val paths: ArrayList<File> = ArrayList<File>()
 
     fun withMendixVersion(version: String): ToolFinderBuilder {
         mendixVersion = version
@@ -63,91 +67,100 @@ class ToolFinderBuilder {
         return this
     }
 
+    fun withPath(path: File): ToolFinderBuilder {
+        this.paths.plus(path)
+        return this
+    }
+
     fun build(): ToolFinder {
         var toolFinder: ToolFinder
 
+        // add default paths
+        // get install path
+        val extension: MxGradlePluginExtension = project.extensions.getByName("mendix") as MxGradlePluginExtension
+        if (extension.installPath.isPresent) {
+            paths.add(File(extension.installPath.get() + "/${mendixVersion}"))
+        }
+        // default location on window
+        if (Os.current() == Os.WIN) {
+            paths.add(File("C:/Program Files/Mendix/${mendixVersion}"))
+        }
+        // default download location
+        paths.add(project.layout.buildDirectory.dir("modeler/${mendixVersion}").get().asFile)
+
         toolFinder = NoToolFounder(mendixVersion)
-        toolFinder = DownloadToolFinder(mendixVersion, project, toolFinder)
-        toolFinder = WinToolFinder(mendixVersion, toolFinder)
+        toolFinder = PathToolFinder(paths, project.logger, toolFinder)
         return toolFinder
     }
 
 }
 
-class WinToolFinder(version: String, val fallback: ToolFinder): ToolFinder {
+class PathToolFinder(val paths: List<File>, val logger: Logger, val fallback: ToolFinder): ToolFinder {
 
-    private val modelerLocation = "C:/Program Files/Mendix/${version}/modeler"
+    override fun isRuntimeInstalled(): Boolean {
+        logger.debug("Searching for runtime (${paths.size})")
+        return paths
+            .map { e -> File(e, "runtime") }
+            .filter { e -> logger.debug("checking runtime dir: {}", e); e.exists() }.isNotEmpty() || fallback.isModelerInstalled();
+    }
+
+    override fun getRuntimeLocation(): String {
+        val file = paths.map { folder -> File(folder, "runtime/") }
+            .find { e -> logger.debug("checking runtime dir: {}", e); e.exists() }
+        if (file == null) {
+            return fallback.getRuntimeLocation()
+        }
+        return file.toString()
+
+    }
 
     override fun isModelerInstalled(): Boolean {
-        if (Os.current() != Os.WIN) {
-            return fallback.isModelerInstalled()
-        }
-
-        val modelerDir = File(modelerLocation)
-        return if (modelerDir.isDirectory) true else fallback.isModelerInstalled()
+        logger.debug("Searching for modeler (${paths.size})")
+        return paths
+            .map { e -> File(e, "modeler") }
+            .filter { e -> logger.debug("checking file: {}", e); e.exists() }.isNotEmpty() || fallback.isModelerInstalled();
     }
 
     override fun getToolLocation(tool: String): String {
-        if (Os.current() != Os.WIN) {
+        val filename = getOsToolName(tool)
+
+        val file = paths.map { folder -> File(folder, "modeler/${filename}") }
+            .find { e -> logger.debug("checking file: {}", e); e.exists() }
+        if (file == null) {
             return fallback.getToolLocation(tool)
         }
-
-        val filename = if (!tool.endsWith(".exe")) "${tool}.exe" else tool
-        val file = File("${modelerLocation}/${filename}")
-        if (file.exists()) {
-            return file.toString()
-        }
-
-        return fallback.getToolLocation(filename)
+        return file.toString()
     }
 
     override fun getMxLocation(): String {
-        return getToolLocation("mx.exe")
+        return getToolLocation("mx")
     }
     override fun getMxbuildLocation(): String {
-        return getToolLocation("mxbuild.exe")
+        return getToolLocation("mxbuild")
     }
 
     override fun getMxutilLocation(): String {
-        return getToolLocation("mxutil.exe")
+        return getToolLocation("mxutil")
     }
 
-}
-
-class DownloadToolFinder(version: String,
-                         project: Project,
-                         private val fallback: ToolFinder): ToolFinder {
-
-    private val modelerLocation = project.layout.buildDirectory.dir("modeler/${version}/modeler").get().asFile
-    // double. should getMxLocation methods be kept and maybe just have getToolLocation
-    private val execExtension = if (Os.current() == Os.WIN) ".exe" else ""
-
-    override fun isModelerInstalled(): Boolean {
-        val modelerDir = modelerLocation
-        return if (modelerDir.isDirectory) true else fallback.isModelerInstalled()
-    }
-
-    override fun getToolLocation(tool: String): String {
-        val file = File(modelerLocation, tool)
-        if (file.exists()) {
-            return file.toString()
+    private fun getOsToolName(tool: String): String {
+        if (Os.current() == Os.WIN && !tool.endsWith(".exe")) {
+            return "${tool}.exe"
         }
-        return fallback.getToolLocation(tool)
+        return tool
     }
 
-    override fun getMxLocation(): String {
-        return getToolLocation("mx${execExtension}")
-    }
-    override fun getMxbuildLocation(): String {
-        return getToolLocation("mxbuild${execExtension}")
-    }
-
-    override fun getMxutilLocation(): String {
-        return getToolLocation("mxutil${execExtension}")
-    }
 }
 
 class NoToolFounder(val version: String): ToolFinder {
+
+    override fun isRuntimeInstalled(): Boolean {
+        return false;
+    }
+
+    override fun getRuntimeLocation(): String {
+        throw RuntimeException("Runtime ${version} is not installed.")
+    }
 
     override fun isModelerInstalled(): Boolean {
         return false;
