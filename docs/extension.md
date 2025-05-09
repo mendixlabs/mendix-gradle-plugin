@@ -50,5 +50,7 @@ ${installPath}
      \- runtime 
 ```
 
-On Windows `installPath` defaults to `C:\Program Files\Mendix`. For other operating 
-systems no default is available.
+On Windows `installPath` defaults to `C:\Program Files\Mendix`. For other operating systems no default is available. 
+To construct this folder structure from the CDN artifacts `mxbuild-<version>.targ.z` and `runtime-<version>.tar.gz`
+first unzip the runtime. This gives you a folder named with the version like `<version>\runtime`. Then unzip the
+mxbuild file into this created folder.
