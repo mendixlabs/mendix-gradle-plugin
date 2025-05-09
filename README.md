@@ -88,7 +88,7 @@ Then open `build.gradle` and add
 plugins {
     id "application"
     id "distribution"
-    id "com.mendixlabs.mendix-gradle-plugin" version "0.0.4"
+    id "com.mendixlabs.mendix-gradle-plugin" version "0.0.6"
 }
  
 mendix {
