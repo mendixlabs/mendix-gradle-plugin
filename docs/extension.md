@@ -27,19 +27,19 @@ For added flexibility the following parameters can be overwritten using command 
 | Parameter | Command line flag |
 | ----      | ----              |
 | `mendixVersion` | `mendixVersion` |
-| `installPath`   | `mxInstallPath` |
+| `installPath`   | `mendixInstallPath` |
 
 This can be used as following
 
 ```bat
-gradlew.bat -PmendixVersion=10.21.1.94969 -PmxInstallPath=c:\runtimes\ mxbuild
+gradlew.bat -PmendixVersion=10.21.1.94969 -mendixInstallPath=c:\runtimes\ mxbuild
 ```
 
 ## Install path format
 
 When `installPath` is configured the Mendix Gradle Plugin expects both modeler tools and 
 runtime to be installed in this folder. `installPath` points to the main folder that contains
-a folder named equally to the provided `mendixVersion`. 
+a folder (or folders) named equally to the provided `mendixVersion`. 
 
 Hence the structure would look like this.
 
