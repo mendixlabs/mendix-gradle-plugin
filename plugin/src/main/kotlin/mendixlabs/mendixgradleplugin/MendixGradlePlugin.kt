@@ -213,8 +213,20 @@ class MendixGradlePlugin: Plugin<Project> {
 
             task.dependsOn("mxEnsureRuntime", "mxWriteConfigs", "mxDeployMda")
 
-            task.classpath(extension.mendixVersion.map { e -> "build/modeler/${e}/runtime/launcher/runtimelauncher.jar" }.get())
-            task.jvmArgs(extension.mendixVersion.map { e -> listOf("-DMX_INSTALL_PATH=build/modeler/${e}") }.get())
+            task.classpath(extension.mendixVersion.map { e ->
+                val toolFinder = ToolFinderBuilder()
+                    .withMendixVersion(e)
+                    .withProject(project)
+                    .build()
+                "${toolFinder.getRuntimeLocation()}/launcher/runtimelauncher.jar"
+            }.get())
+            task.jvmArgs(extension.mendixVersion.map { e ->
+                val toolFinder = ToolFinderBuilder()
+                    .withMendixVersion(e)
+                    .withProject(project)
+                    .build()
+                listOf("-DMX_INSTALL_PATH=${toolFinder.getRuntimeLocation()}/..")
+            }.get())
 
             val args = listOf(
                 project.tasks.getByName("mxDeployMda").outputs.files.singleFile.absolutePath,
