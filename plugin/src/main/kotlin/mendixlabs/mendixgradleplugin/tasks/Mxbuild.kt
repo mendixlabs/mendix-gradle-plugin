@@ -129,7 +129,7 @@ abstract class Mxbuild : DefaultTask() {
             outputReaderThread.interrupt()
 
             if (result >= 1) {
-                throw RuntimeException("MxBuild returned with exit code $[result}")
+                throw RuntimeException("MxBuild returned with exit code ${result}")
             }
         } catch (ex: InterruptedException) {
         }
