@@ -56,6 +56,7 @@ Parameters:
 ## `mxInit`
 
 Creates a new project using `mx(.exe)` using the specified Mendix version and project name from `build.gradle`.
+Note that if the Mendix version is not specified in the plugin configuration, it must be specified using the `-PmendixVersion=<version>` command line flag.
 
 `build.gradle`:
 
