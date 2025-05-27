@@ -56,6 +56,7 @@ Parameters:
 ## `mxInit`
 
 Creates a new project using `mx(.exe)` using the specified Mendix version and project name from `build.gradle`.
+Note that if the Mendix version is not specified in the plugin configuration, it must be specified using the `-PmendixVersion=<version>` command line flag.
 
 `build.gradle`:
 
@@ -128,11 +129,9 @@ Parameters:
 
 ## `mxbuild`
 
-Runs `mxbuild(.exe)` for the specified Mendix version and project file. It produces a MDA file in the folder
-`${project.builddir}/app/`. The execution can be controlled using these parameters.
+Runs `mxbuild(.exe)` for the specified Mendix version and project file. It produces a MDA file in the folder `${project.builddir}/app/`. The execution can be controlled using these parameters.
 
-The `mxbuild` tasks supports incremental builds and uses the state of the MPR file for this. Compiles only
-happen when the MPR file is changed or the mda doesn't exist yet.
+The `mxbuild` tasks supports incremental builds and uses the state of the MPR file for this. Compiles only happen when the MPR file is changed or the mda doesn't exist yet.
 
 Execute
 
@@ -151,6 +150,15 @@ Parameters:
 | `looseVersionCheck`     | Boolean | Instructs `mxbuild` not to restrict on the MPRs Mendix version. Defaults to `false`.                                        |
 | `projectFiles`          | File collection | Specifies which files to watch to support incremental builds of the MDA.                                            | 
 | `writeErrorsFile`       | Boolean | Instructs `mxbuild` not write errors into a file. When set filename will be `${project.name}-errors.json`. Defaults to `false`. |
+
+
+Note: When the Mendix version is overwritten using the `-PmendixVersion` command line flag, the `mxbuild` task will most like need to be configured to support loose version checks. This can be done by changing the configuration in `build.gradle` like this:
+
+```groovy
+tasks.named("mxbuild") {
+    looseVersionCheck = true
+}
+```
 
 ## `mxWriteConfigs`
 

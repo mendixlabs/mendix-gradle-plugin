@@ -3,6 +3,7 @@
  */
 package mendixlabs.mendixgradleplugin
 
+import mendixlabs.mendixgradleplugin.mendix.GetAppVersion
 import mendixlabs.mendixgradleplugin.tasks.*
 import org.gradle.api.Project
 import org.gradle.api.Plugin
@@ -16,8 +17,8 @@ abstract class MxGradlePluginExtension {
     abstract val mprFileName: Property<String>
     abstract val installPath: Property<String>
 
-    init {
-        mprFileName.convention("App.mpr")
+    init {            
+        mprFileName.convention("App.mpr")        
     }
 
 }
@@ -40,7 +41,15 @@ class MendixGradlePlugin: Plugin<Project> {
 
     override fun apply(project: Project) {
         // add plugins to the project
-        val extension = project.extensions.create("mendix", MxGradlePluginExtension::class.java)
+        val extension = project.extensions.create("mendix", MxGradlePluginExtension::class.java)   
+        // to get the MPR file we need the project reference, hence we can't 
+        // set the default (convention) inside the extension definition
+        extension.mendixVersion.convention(
+            extension.mprFileName.map { e ->
+                GetAppVersion(project.layout.projectDirectory.file(e).asFile)
+            }
+        )
+
         project.plugins.apply("distribution")
 
         registerTasks(project)
