@@ -7,9 +7,9 @@ extension the following attributes are available
 
 | Parameter   | Type   | Description                                                                                                          |
 |-------------|--------|----------------------------------------------------------------------------------------------------------------------|
-| `mendixVersion` | String | Version string of the Mendix tools and runtime to use. The value must match the version of the .mpr file. Mandatory. |
-| `mprFileName` | String | Name of the project file. Mandotory.                                                                                 |
-| `installPath` | String | Set a path where modeler tools and runtime are installed. Optional.                                                  |
+| `mendixVersion` | String | Version string of the Mendix tools and runtime to use. Defaults to the version found in the .mpr file (same as task `mxGetVersion`). |
+| `mprFileName` | String | Name of the project file. Defaults to `App.mpr`. |
+| `installPath` | String | Set a path where modeler tools and runtime are installed. Optional. |
 
 Example:
 
