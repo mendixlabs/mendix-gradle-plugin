@@ -18,28 +18,36 @@ Feedback on your use-case and experience is welcome though as with this
 project I try to experiment on a different approach on interaction, 
 automation and shipping a Mendix app.
 
-## Version support
+## Version support for Mendix tools and runtime
 
-The plugin was developed with Mendix 10.11 as latest version. The `mxRun` 
-task will only work  on this version. For other tasks, like `mxbuild` some
-parameters may not be available in previous versions and thus can't be used
-then.
+This plugin covers two items
+* Wrap Mendix CLI tools for easy use
+* Build a Mendix app distribution
 
-Based on operating system and processor there are also some differences as
-the Mendix tooling is not available for every operating system and processor
-type for each version. See the table for details.
+### CLI tool support
+
+The Gradle plugin supports Mendix CLI tools for various versions and operating
+systems. 
 
 | Mendix Version | OS       | Notes                                                                                                                                            | 
 |----------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------|
 | All            | Windows  | On Windows all versions are supported when they are installed.                                                                                   |
-| \> 9.23        | Windows  | Starting this version Windows tooling can be donwloaded from CDN. In case not available locally.                                                 |
 | \> 9.16        | Linux    | For Linux tools tools are always downloaded from CDN. Starting this version tools are compiled as native Linux executables.                      |
-| \> 10.11       | All      | Mendix 10.11 comes with an embedded m2ee bootstrapper and can be started with a config file. From this version onward the `mxRun` command works. |
+| \> 9.23        | Windows  | Starting this version Windows tooling can be donwloaded from CDN. In case not available locally.                                                 |
 
 Note: when running Mendix tooling on Linux it depends on system library 
 `libuci-dev` to be installed.
 
-Note: MacOS is not supported as StudioPro Mac doesn't ship CLI tools (yet).
+Note: MacOS is not supported as StudioPro Mac doesn't ship CLI tools.
+
+### App distribution support
+
+Version 10.11 of Mendix runtime includes a boot file config option 
+(see `mxWriteConfig` and `mxRun`) which doesn't depend on external tools 
+like M2EE Tools or Docker Build Pack to run an application. 
+
+Starting version 10.11 the `mxRun` and `mxDistZip` commands are supported
+to create a Mendix app distribution package. 
 
 
 ## Installation
