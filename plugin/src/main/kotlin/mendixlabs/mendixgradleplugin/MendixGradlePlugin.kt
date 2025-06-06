@@ -12,13 +12,32 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.JavaExec
 
-abstract class MxGradlePluginExtension {
+abstract class MxGradlePluginExtension(private val project: Project) {
     abstract val mendixVersion: Property<String>
     abstract val mprFileName: Property<String>
     abstract val installPath: Property<String>
 
     init {            
-        mprFileName.convention("App.mpr")        
+        mprFileName.convention("App.mpr")
+        mendixVersion.convention(
+            mprFileName.map { e ->
+                if (project.hasProperty("mendixVersion")) {
+                    project.properties.get("mendixVersion").toString()
+                } else {
+                    GetAppVersion(project.layout.projectDirectory.file(e).asFile)
+                }
+            }
+        )
+        installPath.convention(
+            project.provider {
+                if (project.hasProperty("mendixInstallPath")) {
+                    project.properties.get("mendixInstallPath").toString()
+                } else {
+                    ""
+                }
+            }
+        )
+
     }
 
 }
@@ -41,33 +60,14 @@ class MendixGradlePlugin: Plugin<Project> {
 
     override fun apply(project: Project) {
         // add plugins to the project
-        val extension = project.extensions.create("mendix", MxGradlePluginExtension::class.java)   
-        // to get the MPR file we need the project reference, hence we can't 
-        // set the default (convention) inside the extension definition
-        extension.mendixVersion.convention(
-            extension.mprFileName.map { e ->
-                GetAppVersion(project.layout.projectDirectory.file(e).asFile)
-            }
-        )
+        val extension = project.extensions.create("mendix", MxGradlePluginExtension::class.java, project)
 
         project.plugins.apply("distribution")
 
-        registerTasks(project)
-
-        project.afterEvaluate { p ->
-            if (p.hasProperty("mendixVersion")) {
-                extension.mendixVersion.set(p.properties.get("mendixVersion").toString())
-            }
-            if (p.hasProperty("mendixInstallPath")) {
-                extension.installPath.set(p.properties.get("mendixInstallPath").toString())
-            }
-        }
-
+        registerTasks(project, extension)
     }
 
-    fun registerTasks(project: Project) {
-        val extension = project.extensions.getByType<MxGradlePluginExtension>(MxGradlePluginExtension::class.java)
-
+    fun registerTasks(project: Project, extension: MxGradlePluginExtension) {
         // -------------------------------------------------------------------------------------------------------------
         // Project helpers
         // -------------------------------------------------------------------------------------------------------------
