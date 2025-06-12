@@ -52,9 +52,9 @@ to create a Mendix app distribution package.
 
 ## Installation
 
-To enable the use of this plugin it first must be made available to Gradle.
-Since the plugin is not released into the Gradle Plugin Hub it needs to be
-available in the local M2 cache. 
+Note: installing the plugin locally is only required when using SNAPSHOT 
+(development) versions or an unreleased version. Installing locally will push
+the plugins into the local Maven repository cache.
 
 Check out this project and the compile and build. The build needs Java 11 to
 compile. For Gradle make this available with Java on the PATH or set JAVA_HOME.
@@ -83,7 +83,7 @@ of the file:
 ```groovy
 pluginManagement {
     repositories {
-        mavenLocal()
+        // mavenLocal() // only for development versions
         mavenCentral()
         gradlePluginPortal()
     }
