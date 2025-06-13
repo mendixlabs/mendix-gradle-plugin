@@ -11,6 +11,8 @@ import org.gradle.api.distribution.DistributionContainer
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.JavaExec
+import org.gradle.api.tasks.SourceSetContainer
+import java.io.File
 
 abstract class MxGradlePluginExtension(private val project: Project) {
     abstract val mendixVersion: Property<String>
@@ -59,12 +61,51 @@ class MendixGradlePlugin: Plugin<Project> {
     private val appBuildDir = "app"
 
     override fun apply(project: Project) {
-        // add plugins to the project
+        // add plugin and configure the project
         val extension = project.extensions.create("mendix", MxGradlePluginExtension::class.java, project)
 
-        project.plugins.apply("distribution")
-
         registerTasks(project, extension)
+        addJavaProjectConfig(project, extension);
+    }
+
+    /*
+     * Adds Java plugin and configuration to the project so that
+     * Mendix Java sources and dependencies are included.
+     */
+    private fun addJavaProjectConfig(project: Project, extension: MxGradlePluginExtension) {
+        project.plugins.apply("java")
+
+        // Configure Java source sets to include Mendix javasource directory
+        project.extensions.getByType(SourceSetContainer::class.java).named("main") {
+            it.java.srcDir(project.layout.projectDirectory.dir("javasource"))
+        }
+        // include libraries from userlib and vendorlib
+        project.dependencies.add("implementation", project.fileTree("userlib") {
+            it.include("**/*.jar")
+        })
+        // TODO: replace vendorlib folder scanning with reading specified dependencies from the MPR file
+        project.dependencies.add("implementation", project.fileTree("vendorlib") {
+            it.include("**/*.jar")
+        })
+        // register Mendix runtime API libraries as dependencies
+        project.dependencies.add("implementation", project.provider {
+            val toolFinder = ToolFinderBuilder()
+                .withMendixVersion(extension.mendixVersion.get())
+                .withProject(project)
+                .build()
+            val runtimeLocation = toolFinder.getRuntimeLocation()
+
+            val mendixLibs = arrayOf(
+                "com.mendix.json.jar",
+                "com.mendix.logging-api.jar",
+                "com.mendix.public-api.jar",
+                "org.eclipse.jetty.toolchain.jetty-servlet-api.jar",
+                "org.eclipse.jetty.toolchain.jetty-javax-websocket-api.jar")
+                .map { e -> File(runtimeLocation, "bundles/${e}") }
+                .filter { it.exists() }
+
+            project.files(mendixLibs)
+        })
     }
 
     fun registerTasks(project: Project, extension: MxGradlePluginExtension) {
@@ -336,6 +377,8 @@ class MendixGradlePlugin: Plugin<Project> {
         // mxDistZip
         // mxDistTar
         // installMxDist
+        project.plugins.apply("distribution")
+
         val distributions = project.extensions.getByType(DistributionContainer::class.java)
         distributions.register("mx") { dist ->
             dist.distributionBaseName.set(project.name)
