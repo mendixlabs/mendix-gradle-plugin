@@ -6,6 +6,10 @@ version agnostic. The plugin also provides run and distribution options. The
 plugin works on Windows and Linux. Mac support will be added when CLI tools
 are available.
 
+Additionally the plugin configures the project as Java application so that IDEs
+supporting Gradle, like IntelliJ IDEA, can be used to work with the project.
+The configuration adds the project Java source files and necessary dependencies.
+
 ## Experimental
 
 This is an experimental project and comes without warranty and support.
@@ -165,6 +169,18 @@ open the zip. To run the distribution in this project execute.
 gradlew.bat installMxDist
 build\install\<app-name>\bin\start.bat
 ```
+
+## IDE Support
+
+The plugins configures the project as Java application for IDEs that support
+Gradle. Java dependencies are added based on the files present in the `userlib`
+and `vendorlib` folder. To manage dependencies use the Java Dependencies option
+for the Module Settings inside Studio Pro and then sync the project. Reload 
+the project after worth in the IDE to see the changes.
+
+The Java version specified inside the Mendix project is not yet synced. Set the
+`java.sourceCompatibility` and `java.targetCompatibility` in the `build.gradle`
+for this.
 
 ## License
 
