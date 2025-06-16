@@ -100,7 +100,7 @@ class PathToolFinder(val paths: List<File>, val logger: Logger, val fallback: To
     override fun isRuntimeInstalled(): Boolean {
         logger.debug("Searching for runtime (${paths.size})")
         return paths
-            .map { e -> File(e, "runtime") }
+            .map { e -> File(e, "runtime/launcher") }
             .filter { e -> logger.debug("checking runtime dir: {}", e); e.exists() }.isNotEmpty() || fallback.isModelerInstalled();
     }
 
