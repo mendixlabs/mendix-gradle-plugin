@@ -404,7 +404,7 @@ class MendixGradlePlugin: Plugin<Project> {
                     }
                 }
 
-                spec.into("runtime") { runtimeSpec ->
+                spec.into("lib/runtime") { runtimeSpec ->
                     val runtimeDir = extension.mendixVersion.map { version ->
                         val toolFinder = ToolFinderBuilder()
                             .withMendixVersion(version)

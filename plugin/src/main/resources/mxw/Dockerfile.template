@@ -5,7 +5,7 @@ RUN mkdir /home/nobody && \
   chmod 700 /home/nobody && \
   usermod -d /home/nobody nobody
 
-COPY --chown=nobody:nogroup build/install/%PROJECT%/runtime /opt/app/runtime
+COPY --chown=nobody:nogroup build/install/%PROJECT%/lib/runtime /opt/app/runtime
 COPY --chown=nobody:nogroup build/install/%PROJECT%/app /opt/app/deployment
 COPY --chown=nobody:nogroup build/install/%PROJECT%/etc /opt/app/etc
 

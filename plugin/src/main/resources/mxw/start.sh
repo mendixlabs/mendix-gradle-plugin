@@ -15,6 +15,7 @@
 
 SCRIPT_DIR=$(dirname $0)
 BASE_DIR=$(realpath ${SCRIPT_DIR}/..)
+RUTNIIME_DIR=${BASE_DIR}/lib
 
 # Process config param
 CONFIG=${BASE_DIR}/etc/Default.conf
@@ -33,4 +34,4 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-${JAVA} ${JAVA_OPTS} -DMX_INSTALL_PATH=${BASE_DIR} -jar ${BASE_DIR}/runtime/launcher/runtimelauncher.jar ${BASE_DIR}/app ${CONFIG}
+${JAVA} ${JAVA_OPTS} -DMX_INSTALL_PATH=${RUTNIIME_DIR} -jar ${RUTNIIME_DIR}/runtime/launcher/runtimelauncher.jar ${BASE_DIR}/app ${CONFIG}
