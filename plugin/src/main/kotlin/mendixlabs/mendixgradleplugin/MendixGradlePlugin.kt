@@ -98,6 +98,7 @@ class MendixGradlePlugin: Plugin<Project> {
             val mendixLibs = arrayOf(
                 "com.mendix.json.jar",
                 "com.mendix.logging-api.jar",
+                "com.mendix.m2ee-api.jar",
                 "com.mendix.public-api.jar",
                 "org.eclipse.jetty.toolchain.jetty-servlet-api.jar",
                 "org.eclipse.jetty.toolchain.jetty-javax-websocket-api.jar")
