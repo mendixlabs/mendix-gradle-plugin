@@ -16,6 +16,7 @@
 @rem Setting base values
 set SCRIPT_DIR=%~dp0
 set BASE_DIR=%SCRIPT_DIR%..
+set LIB_DIR=%BASE_DIR%\lib
 
 @rem Processing config param
 set CFG_PARAM=%~dpnx1
@@ -39,4 +40,4 @@ if %ERRORLEVEL% neq 0 (
 :endjavacheck
 
 @rem Execute app
-"%JAVA%" %JAVA_OPTS% -DMX_INSTALL_PATH=%BASE_DIR% -jar %BASE_DIR%\runtime\launcher\runtimelauncher.jar %BASE_DIR%\app %CONFIG%
+"%JAVA%" %JAVA_OPTS% -DMX_INSTALL_PATH=%LIB_DIR% -jar %LIB_DIR%\runtime\launcher\runtimelauncher.jar %BASE_DIR%\app %CONFIG%

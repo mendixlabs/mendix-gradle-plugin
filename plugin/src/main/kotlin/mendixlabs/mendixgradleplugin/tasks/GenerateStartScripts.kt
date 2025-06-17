@@ -9,7 +9,7 @@ abstract class GenerateStartScripts: DefaultTask() {
     @TaskAction
     fun runTask() {
         copyFile("start.bat", "scripts", false)
-        copyFile("start.sh", "scripts", true)
+        copyFile("start", "scripts", true)
     }
 
     private fun copyFile(scriptName: String, outputDir: String, setExecFlag: Boolean) {
