@@ -258,7 +258,7 @@ class MendixGradlePlugin: Plugin<Project> {
             }
         }
 
-        project.tasks.register<JavaExec>("mxRun", JavaExec::class.java) { task ->
+        project.tasks.register<MxRun>("mxRun", MxRun::class.java) { task ->
             task.group = PLUGIN_GROUP_MX
             task.description = "Run the Mendix project"
 
@@ -269,22 +269,18 @@ class MendixGradlePlugin: Plugin<Project> {
                     .withMendixVersion(e)
                     .withProject(project)
                     .build()
-                "${toolFinder.getRuntimeLocation()}/launcher/runtimelauncher.jar"
+                "${toolFinder.getRuntimeLocation()}${File.separator}launcher${File.separator}runtimelauncher.jar"
             }.get())
             task.jvmArgs(extension.mendixVersion.map { e ->
                 val toolFinder = ToolFinderBuilder()
                     .withMendixVersion(e)
                     .withProject(project)
                     .build()
-                listOf("-DMX_INSTALL_PATH=${toolFinder.getRuntimeLocation()}/..")
+                listOf("-DMX_INSTALL_PATH=${toolFinder.getRuntimeLocation()}${File.separator}..")
             }.get())
 
-            val args = listOf(
-                project.tasks.getByName("mxDeployMda").outputs.files.singleFile.absolutePath,
-                project.layout.buildDirectory.file(appBuildDir + "/Default.conf").get().asFile.absolutePath
-            )
-            task.args(args)
-
+            task.appFolder.set(project.tasks.getByName("mxDeployMda").outputs.files.singleFile)
+            task.configFile.set(project.layout.buildDirectory.file("${appBuildDir}${File.separator}Default.conf"))
         }
 
         // -------------------------------------------------------------------------------------------------------------

@@ -215,8 +215,11 @@ Parameters: None
 
 ## `mxRun`
 
-Runs the application using the generated configuration file and unzipped MDA. This is an implementation of the Gradle
-`JavaExec` task. It assumes `mxbuild` is executed.
+Runs the application using the generated configuration file and unzipped MDA. This is an extension of the
+JavaExec task. Parameters are preconfigured with default to run the app with default configuration. The 
+task is extended with a `configFile` parameter for easy use.  
+
+**NOTE**: Don't use the `args` parameter. The value is set automatically.
 
 Execute:
 
@@ -226,11 +229,13 @@ gradlew.bat mxRun
 
 Parameters: See [JavaExec](https://docs.gradle.org/8.5/dsl/org.gradle.api.tasks.JavaExec.html)
 
-| Parameter   | Type    | Description                                                                  |
-|-------------|---------|------------------------------------------------------------------------------|
-| `classpath` | String  | Set to `runtimelauncher.jar` from the Runtime distribution.                  |
-| `jvmArgs`   | String | Defines JVM arguments. Needs to have `MX_INSTALL_PATH` at minimal.           |
-| `args`      | String | Passed the MDA deployment folder and config file. Defaults to Defaults.conf. |
+| Parameter   | Type    | Description                                                                                   |
+|-------------|---------|-----------------------------------------------------------------------------------------------|
+| `appFolder`| Directory | The directory where the compiled app is stored.        |
+| `configFile` | File  | The configuration file to use. Defaults to `Default.conf` as generated from the source. |
+| `classpath` | String  | Set to `runtimelauncher.jar` from the Runtime distribution.                                   |
+| `jvmArgs`   | String | Defines JVM arguments. Needs to have `MX_INSTALL_PATH` at minimal.                            |
+| `args`      | String | Content is set based on config options `appFolder` and `configFile`. Don't use this argument. |
 
 
 ## `mxStartScripts`
