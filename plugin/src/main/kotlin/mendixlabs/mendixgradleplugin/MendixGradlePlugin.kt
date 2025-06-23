@@ -10,7 +10,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.distribution.DistributionContainer
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Copy
-import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.SourceSetContainer
 import java.io.File
 
@@ -264,20 +263,21 @@ class MendixGradlePlugin: Plugin<Project> {
 
             task.dependsOn("mxEnsureRuntime", "mxWriteConfigs", "mxDeployMda")
 
-            task.classpath(extension.mendixVersion.map { e ->
+            task.classpath(project.provider {
                 val toolFinder = ToolFinderBuilder()
-                    .withMendixVersion(e)
+                    .withMendixVersion(extension.mendixVersion.get())
                     .withProject(project)
                     .build()
-                "${toolFinder.getRuntimeLocation()}${File.separator}launcher${File.separator}runtimelauncher.jar"
-            }.get())
-            task.jvmArgs(extension.mendixVersion.map { e ->
+                "${toolFinder.getRuntimeLocation()}/launcher/runtimelauncher.jar"
+
+            })
+            task.jvmArguments.set(project.provider {
                 val toolFinder = ToolFinderBuilder()
-                    .withMendixVersion(e)
+                    .withMendixVersion(extension.mendixVersion.get())
                     .withProject(project)
                     .build()
                 listOf("-DMX_INSTALL_PATH=${toolFinder.getRuntimeLocation()}${File.separator}..")
-            }.get())
+            })
 
             task.appFolder.set(project.tasks.getByName("mxDeployMda").outputs.files.singleFile)
             task.configFile.set(project.layout.buildDirectory.file("${appBuildDir}${File.separator}Default.conf"))
@@ -288,7 +288,7 @@ class MendixGradlePlugin: Plugin<Project> {
         // -------------------------------------------------------------------------------------------------------------
         project.tasks.register<CDNDownload>("mxInternalDownloadMxbuild", CDNDownload::class.java) { task ->
             task.distribution.set(DistributionType.MODELER)
-            task.mendixVersion.set(extension.mendixVersion)
+            task.mendixVersion.set(project.provider { extension.mendixVersion.get() })
 
             // we'll assume that a project is only used on one operating system
             task.dest.set(project.layout.buildDirectory.file(
@@ -299,27 +299,38 @@ class MendixGradlePlugin: Plugin<Project> {
         project.tasks.register<Copy>("mxInternalUnpackMxbuild", Copy::class.java) { task ->
             task.dependsOn("mxInternalDownloadMxbuild")
 
-            val mxbuildDistribtionFile = project.tasks.getByName("mxInternalDownloadMxbuild").outputs.files.singleFile
-            task.from(project.tarTree(project.resources.gzip(mxbuildDistribtionFile)))
-            task.into(project.layout.buildDirectory.dir(extension.mendixVersion.map { e-> "modeler/${e}" } ))
+            task.from(project.provider {
+                val mxbuildDistributionFile = project.tasks.getByName("mxInternalDownloadMxbuild").outputs.files.singleFile
+                project.tarTree(project.resources.gzip(mxbuildDistributionFile))
+            })
+            task.into(project.provider {
+                project.layout.buildDirectory.dir("modeler/${extension.mendixVersion.get()}").get()
+            })
         }
 
         project.tasks.register("mxEnsureModeler") { task ->
-            val mxVersion = extension.mendixVersion.get()
             task.group = PLUGIN_GROUP_MX
             task.description = "Get MxBuild if configured version is not available locally."
 
-            val toolFinder = ToolFinderBuilder()
+            task.dependsOn(project.provider {
+                val mxVersion = extension.mendixVersion.get()
+                if (mxVersion.isEmpty()) {
+                    task.logger.lifecycle("No Mendix version configured, skipping modeler check.")
+                    return@provider emptyList<String>()
+                }
+
+                val toolFinder = ToolFinderBuilder()
                     .withMendixVersion(mxVersion)
                     .withProject(project)
                     .build()
-            if (!toolFinder.isModelerInstalled()) {
-                task.logger.lifecycle("modeler is not installed")
-                task.dependsOn("mxInternalUnpackMxbuild")
-                task.mustRunAfter("mxInternalUnpackMxbuild")
-            } else {
-                task.logger.lifecycle("modeler is installed")
-            }
+                val installed = toolFinder.isModelerInstalled()
+                task.logger.info("modeler is installed: ${installed}")
+                if (!installed) {
+                    return@provider "mxInternalUnpackMxbuild"
+                }
+                return@provider emptyList<String>()
+            })
+            task.mustRunAfter("mxInternalUnpackMxbuild")
         }
 
         // -------------------------------------------------------------------------------------------------------------
@@ -330,35 +341,49 @@ class MendixGradlePlugin: Plugin<Project> {
             task.mendixVersion.set(extension.mendixVersion)
 
             task.dest.set(project.layout.buildDirectory.file(
-                    extension.mendixVersion.map { e -> "modeler/${constructMxbuildFilename(DistributionType.RUNTIME, e)}" }
+                extension.mendixVersion.map { e -> "modeler/${constructMxbuildFilename(DistributionType.RUNTIME, e)}" }
             ))
+
         }
 
         project.tasks.register<Copy>("mxInternalUnpackRuntime", Copy::class.java) { task ->
             task.dependsOn("mxInternalDownloadRuntime")
-
             task.mustRunAfter("mxInternalUnpackMxbuild")
 
-            val runtimeDistribtionFile = project.tasks.getByName("mxInternalDownloadRuntime").outputs.files.singleFile
-            task.from(project.tarTree(project.resources.gzip(runtimeDistribtionFile)))
-            task.into(project.layout.buildDirectory.dir("modeler/"))
+            task.from(project.provider {
+                val runtimeDistributionFile = project.tasks.getByName("mxInternalDownloadRuntime").outputs.files.singleFile
+                project.tarTree(project.resources.gzip(runtimeDistributionFile))
+            })
+            task.into(project.provider {
+                // no need to pass to add the version to the path as the runtime distribution root
+                // is the version value
+                project.layout.buildDirectory.dir("modeler").get()
+            })
         }
 
         project.tasks.register("mxEnsureRuntime").configure { task ->
             task.group = PLUGIN_GROUP_MX
             task.description = "Get Runtime if configured version is not available locally."
 
-            val toolFinder = ToolFinderBuilder()
-                .withMendixVersion(extension.mendixVersion.get())
-                .withProject(project)
-                .build();
-            if (!toolFinder.isRuntimeInstalled()) {
-                task.logger.lifecycle("runtime is not installed")
-                task.dependsOn("mxInternalUnpackRuntime")
-                task.mustRunAfter("mxInternalUnpackRuntime")
-            } else {
-                task.logger.lifecycle("runtime is installed")
-            }
+            task.dependsOn(project.provider {
+                val mxVersion = extension.mendixVersion.get()
+                if (mxVersion.isEmpty()) {
+                    task.logger.lifecycle("No Mendix version configured, skipping runtime check.")
+                    return@provider emptyList<String>()
+                }
+
+                val toolFinder = ToolFinderBuilder()
+                    .withMendixVersion(mxVersion)
+                    .withProject(project)
+                    .build()
+                val installed = toolFinder.isRuntimeInstalled()
+                task.logger.lifecycle("runtime is installed: ${installed}")
+                if (!installed) {
+                    return@provider "mxInternalUnpackRuntime"
+                }
+                return@provider emptyList<String>()
+            })
+            task.mustRunAfter("mxInternalUnpackRuntime")
         }
 
 
