@@ -14,13 +14,10 @@ The configuration adds the project Java source files and necessary dependencies.
 
 This is an experimental project and comes without warranty and support.
 
-Goal of this project is to experiment with interaction, automation and
-distribution of Mendix application. Please provide feedback on these 
-topics that could be addressed by this plugin. 
-
-Feedback on your use-case and experience is welcome though as with this 
-project I try to experiment on a different approach on interaction, 
-automation and shipping a Mendix app.
+This project aims to experiment with the interaction, automation, and
+distribution of Mendix applications. We welcome feedback on these
+aspects that could be addressed by this plugin or in the Mendix platform 
+itself.
 
 ## Version support for Mendix tools and runtime
 
@@ -33,11 +30,11 @@ This plugin covers two items
 The Gradle plugin supports Mendix CLI tools for various versions and operating
 systems. 
 
-| Mendix Version | OS       | Notes                                                                                                                                            | 
-|----------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| All            | Windows  | On Windows all versions are supported when they are installed.                                                                                   |
-| \> 9.16        | Linux    | For Linux tools tools are always downloaded from CDN. Starting this version tools are compiled as native Linux executables.                      |
-| \> 9.23        | Windows  | Starting this version Windows tooling can be donwloaded from CDN. In case not available locally.                                                 |
+| Mendix Version | OS       | Notes                                                                                                                       | 
+|----------------|----------|-----------------------------------------------------------------------------------------------------------------------------|
+| All            | Windows  | On Windows all versions are supported when they are installed.                                                              |
+| \> 9.16        | Linux    | For Linux tools tools are always downloaded from CDN. Starting this version tools are compiled as native Linux executables. |
+| \> 9.23        | Windows  | Starting this version Windows tooling can be downloaded from CDN. In case not available locally.                            |
 
 Note: when running Mendix tooling on Linux it depends on system library 
 `libuci-dev` to be installed.
@@ -54,74 +51,41 @@ Starting version 10.11 the `mxRun` and `mxDistZip` commands are supported
 to create a Mendix app distribution package. 
 
 
-## Installation
-
-Note: installing the plugin locally is only required when using SNAPSHOT 
-(development) versions or an unreleased version. Installing locally will push
-the plugins into the local Maven repository cache.
-
-Check out this project and the compile and build. The build needs Java 11 to
-compile. For Gradle make this available with Java on the PATH or set JAVA_HOME.
-The execute
-
-```bat
-gradlew.bat build publishToMavenLocal
-```
-
 ## Create or configure a Mendix project
 
 To use the plugin your Mendix project needs to be a Gradle project. To create 
-a project execute
+a Gradle project execute `gradle.bat`. On Windows Studio Pro includes a copy
+of Gradle, based on th default installation folder the command will be
 
 ```bat
-gradle.bat init --type basic --dsl groovy
+"c:\Program Files\Mendix\gradle-8.5\bin\gradle.bat" init --type basic --dsl groovy
 ```
 
 Answer the values and check if the project is created, `gradlew.bat` and 
-`build.gradle` must exist. 
+`build.gradle` is created.
 
-Now open `settings.gradle` to add a bit of plugin management because the
-plugin is only available from the local M2 repo. Add the following at the top
-of the file:
-
-```groovy
-pluginManagement {
-    repositories {
-        // mavenLocal() // only for development versions
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-```
-
-Then open `build.gradle` and add 
+Open `build.gradle` and add 
 
 ```groovy
 plugins {
     id "application"
-    id "distribution"
-    id "com.mendixlabs.mendix-gradle-plugin" version "0.0.6"
+    id "com.mendixlabs.mendix-gradle-plugin" version "0.0.7"
 }
  
 mendix {
-    mendixVersion = "10.11.0.36903"
+    mendixVersion = "10.21.1.64969"
     mprFileName = "App.mpr"
 }
 ```
 
-See [Extension configuration](docs/extension.md) for plugin configuration details.
+See [Extension configuration](docs/extension.md) for plugin configuration details. In case
+the Gradle files are added to a folder where the Mendix project already exists, make sure
+that `mprFileName` is set to the name of the Mendix project file.
 
-For a new project init the project with
+For a new project initialize t with
 
 ```bat
 gradlew.bat mxEnsureModeler mxInit
-```
-
-For an existing project use the Mendix version that is used for this project
-and the Mendix version of the project. In case you are not sure, use
-
-```bat
-gradlew.bat mxGetVersion
 ```
 
 ## Versioning
@@ -176,11 +140,44 @@ The plugins configures the project as Java application for IDEs that support
 Gradle. Java dependencies are added based on the files present in the `userlib`
 and `vendorlib` folder. To manage dependencies use the Java Dependencies option
 for the Module Settings inside Studio Pro and then sync the project. Reload 
-the project after worth in the IDE to see the changes.
+the project after changing in the IDE to see the changes.
 
 The Java version specified inside the Mendix project is not yet synced. Set the
 `java.sourceCompatibility` and `java.targetCompatibility` in the `build.gradle`
 for this.
+
+## Developing
+
+This plugin is based on 
+
+* Java 11: This is the Java version supported by Mendix 9 and the early 10 versions.
+* Gradle 8.5: Studio Pro ships with this version and hence this version is used as
+that is already available on the developers machine. 
+
+To use a development version, check out this project and compile and publish. For Gradle 
+make this version available with Java on the PATH or set JAVA_HOME. Then execute the 
+following command to publish the plugin into the local maven cache.
+
+```bat
+gradlew.bat build publishToMavenLocal
+```
+
+To use the development version in a project add the following at the top of 
+the `settings.gradle` file:
+
+```groovy
+pluginManagement {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+```
+
+Then configuration the plugin target project using the version found in the 
+`plugin/build.gradle.kts` file.
+
 
 ## License
 
