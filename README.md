@@ -54,21 +54,21 @@ to create a Mendix app distribution package.
 ## Create or configure a Mendix project
 
 To use the plugin your Mendix project needs to be a Gradle project. To create 
-a project execute
+a Gradle project execute `gradle.bat`. On Windows Studio Pro includes a copy
+of Gradle, based on th default installation folder the command will be
 
 ```bat
-gradle.bat init --type basic --dsl groovy
+"c:\Program Files\Mendix\gradle-8.5\bin\gradle.bat" init --type basic --dsl groovy
 ```
 
 Answer the values and check if the project is created, `gradlew.bat` and 
-`build.gradle` must exist. 
+`build.gradle` is created.
 
 Open `build.gradle` and add 
 
 ```groovy
 plugins {
     id "application"
-    id "distribution"
     id "com.mendixlabs.mendix-gradle-plugin" version "0.0.7"
 }
  
