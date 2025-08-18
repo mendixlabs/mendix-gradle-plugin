@@ -34,6 +34,9 @@ enum class Os {
             if (os.lowercase().equals("linux")) {
                 return LINUX
             }
+            if (os.lowercase().equals("mac os x")) {
+                return OSX
+            }
 
             throw RuntimeException("Os ${os} not supported")
         }
@@ -75,15 +78,20 @@ class ToolFinderBuilder {
     fun build(): ToolFinder {
         var toolFinder: ToolFinder
 
-        // add default paths
-        // get install path
+        // add paths where Studio Pro can be found, these are the
+        // install path as provided in configuration, the default
+        // paths per OS and the default download location
         val extension: MxGradlePluginExtension = project.extensions.getByName("mendix") as MxGradlePluginExtension
         if (extension.installPath.isPresent) {
             paths.add(File(extension.installPath.get() + "/${mendixVersion}"))
         }
-        // default location on window
         if (Os.current() == Os.WIN) {
+            // default location on windows
             paths.add(File("C:/Program Files/Mendix/${mendixVersion}"))
+        }
+        if (Os.current() == Os.OSX) {
+            // default location on Mac OS X for Beta versions
+            paths.add(File("/Applications/Studio Pro ${mendixVersion}-Beta.app/Contents"))
         }
         // default download location
         paths.add(project.layout.buildDirectory.dir("modeler/${mendixVersion}").get().asFile)
