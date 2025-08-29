@@ -138,8 +138,11 @@ abstract class Mxbuild : DefaultTask() {
 
     @Internal
     fun getJavaHome(): String {
-        // to do , better error handling
-        return System.getenv("JAVA_HOME")
+        // Prefer Gradle's javaHome if set, otherwise use the JVM running Gradle.
+        // we'll assume for now this is the same Java version as configured
+        // in the Mendix project.
+        val gradleJavaHome = project.findProperty("org.gradle.java.home") as? String
+        return gradleJavaHome ?: System.getProperty("java.home")
     }
 
     @Internal
