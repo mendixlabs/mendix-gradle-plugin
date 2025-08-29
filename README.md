@@ -35,11 +35,10 @@ systems.
 | All            | Windows  | On Windows all versions are supported when they are installed.                                                              |
 | \> 9.16        | Linux    | For Linux tools tools are always downloaded from CDN. Starting this version tools are compiled as native Linux executables. |
 | \> 9.23        | Windows  | Starting this version Windows tooling can be downloaded from CDN. In case not available locally.                            |
+| \> 11.2        | Mac OS   | Studio Pro 11.2 for Mac ships now with CLI tools.                                                                           |
 
 Note: when running Mendix tooling on Linux it depends on system library 
 `libuci-dev` to be installed.
-
-Note: MacOS is not supported as StudioPro Mac doesn't ship CLI tools.
 
 ### App distribution support
 
@@ -69,7 +68,7 @@ Open `build.gradle` and add
 ```groovy
 plugins {
     id "application"
-    id "com.mendixlabs.mendix-gradle-plugin" version "0.0.7"
+    id "com.mendixlabs.mendix-gradle-plugin" version "0.0.9"
 }
  
 mendix {
@@ -181,7 +180,7 @@ Then configuration the plugin target project using the version found in the
 
 ## License
 
-Copyright 2024 Mendix Technology BV
+Copyright 2025 Mendix Technology BV
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
