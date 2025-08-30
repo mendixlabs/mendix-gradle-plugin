@@ -3,8 +3,7 @@
 This plugin helps you to work with a Mendix project using Gradle. It provides 
 wrappers for the Mendix tools as `mxbuild` and `mx`, making interaction
 version agnostic. The plugin also provides run and distribution options. The
-plugin works on Windows and Linux. Mac support will be added when CLI tools
-are available.
+plugin works on Windows, Mac and Linux.
 
 Additionally the plugin configures the project as Java application so that IDEs
 supporting Gradle, like IntelliJ IDEA, can be used to work with the project.
@@ -14,7 +13,7 @@ The configuration adds the project Java source files and necessary dependencies.
 
 This is an experimental project and comes without warranty and support.
 
-This project aims to experiment with the interaction, automation, and
+This project aims to experiment with the interaction, automation and
 distribution of Mendix applications. We welcome feedback on these
 aspects that could be addressed by this plugin or in the Mendix platform 
 itself.
@@ -72,36 +71,31 @@ plugins {
 }
  
 mendix {
-    mendixVersion = "10.21.1.64969"
+    mendixVersion = "11.2.0.77998"
     mprFileName = "App.mpr"
 }
 ```
 
 See [Extension configuration](docs/extension.md) for plugin configuration details. In case
-the Gradle files are added to a folder where the Mendix project already exists, make sure
-that `mprFileName` is set to the name of the Mendix project file.
+the Gradle files are added to a folder where a Mendix project already exists, make sure
+that `mprFileName` is set to the name of the Mendix project file. In case no MPR file
+name is provided `App.mpr` is taken as default.
 
-For a new project initialize t with
+For a new project initialize with
 
 ```bat
-gradlew.bat mxEnsureModeler mxInit
+gradlew.bat mxInit
 ```
 
 ## Versioning
 
 The plugin uses the `version` value from `gradle.properties` in the build 
-and distribution tasks as input.
+and distribution tasks as input to version the artifacts it builds.
 
 ## Usage
 
 Use `gradlew.bat tasks` to view which [tasks](docs/tasks.md) are available. It 
 is also possible to specify [custom tasks](docs/mxcommand.md).
-
-Note: task dependencies are not set for `mxbuild`. Mxbuild takes quite some 
-time and this plugin doesn't contain a good way yet to determine if the 
-project and its associated files have changed. Therefore it is required to
-run `mxbuild` manually when the project source has changed.
-
 
 ### Build an app
 
@@ -111,18 +105,18 @@ gradlew.bat mxbuild
 
 ### Run an app
 
-Assumes `mxbuild` is executed.
-
 ```bat
-gradlew.bat mxEnsureRuntime mxWriteConfigs mxDeployMda mxRun
+gradlew.bat mxRun
 ```
 
 ### Distribute an app
 
-Assumes `mxbuild` is executed.
+This generates a ZIP file including all necessary components to run 
+a Mendix app. It includes the app, config files, the runtime and 
+start scripts.    
 
 ```bat
-gradlew.bat mxEnsureRuntime mxWriteConfigs mxStartScripts mxDistZip
+gradlew.bat mxDistZip
 ```
 
 To see the content of the distribution browse to `build\distributions` and 
