@@ -54,3 +54,14 @@ On Windows `installPath` defaults to `C:\Program Files\Mendix`. For other operat
 To construct this folder structure from the CDN artifacts `mxbuild-<version>.targ.z` and `runtime-<version>.tar.gz`
 first unzip the runtime. This gives you a folder named with the version like `<version>\runtime`. Then unzip the
 mxbuild file into this created folder.
+
+
+## Extension functions
+
+The extension exposes the following functions/utilities:
+
+* `toolFinder`: To locate the Mendix runtime and tools the plugin exposes `toolFinder` as utility. 
+   See [ToolFinder](https://github.com/mendixlabs/mendix-gradle-plugin/blob/main/plugin/src/main/kotlin/mendixlabs/mendixgradleplugin/ToolFinder.kt#L47) for details.
+   The returned implementation of tool finder searches directories for tools in specified order 
+   and is specific for the operating system in use.
+   

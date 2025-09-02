@@ -44,13 +44,57 @@ enum class Os {
 
 }
 
+/**
+ * ToolFinder is a utility to help detect and location the location
+ * of Mendix tools and runtime.
+ */
 interface ToolFinder {
+    /**
+     * Checks if the Mendix runtime is installed.
+     * @return true if installed, false otherwise
+     */
     fun isRuntimeInstalled(): Boolean
+
+    /**
+     * Gets the location of the Mendix runtime.
+     * @return path to the runtime as a String
+     * @throws RuntimeException if not installed
+     */
     fun getRuntimeLocation(): String
+
+    /**
+     * Checks if the Mendix Modeler is installed.
+     * @return true if installed, false otherwise
+     */
     fun isModelerInstalled(): Boolean
+
+    /**
+     * Gets the location of a specific Mendix tool.
+     * @param tool name of the tool executable
+     * @return path to the tool as a String
+     * @throws RuntimeException if not available
+     */
     fun getToolLocation(tool: String): String
+
+    /**
+     * Gets the location of the 'mx' tool.
+     * @return path to 'mx' as a String
+     * @throws RuntimeException if not available
+     */
     fun getMxLocation(): String
+
+    /**
+     * Gets the location of the 'mxbuild' tool.
+     * @return path to 'mxbuild' as a String
+     * @throws RuntimeException if not available
+     */
     fun getMxbuildLocation(): String
+
+    /**
+     * Gets the location of the 'mxutil' tool.
+     * @return path to 'mxutil' as a String
+     * @throws RuntimeException if not available
+     */
     fun getMxutilLocation(): String
 }
 
