@@ -18,6 +18,12 @@ abstract class MxGradlePluginExtension(private val project: Project) {
     abstract val mprFileName: Property<String>
     abstract val installPath: Property<String>
 
+    val toolFinder: ToolFinder
+        get() = ToolFinderBuilder()
+            .withMendixVersion(mendixVersion.get())
+            .withProject(project)
+            .build();
+
     init {            
         mprFileName.convention("App.mpr")
         mendixVersion.convention(
@@ -88,11 +94,7 @@ class MendixGradlePlugin: Plugin<Project> {
         })
         // register Mendix runtime API libraries as dependencies
         project.dependencies.add("implementation", project.provider {
-            val toolFinder = ToolFinderBuilder()
-                .withMendixVersion(extension.mendixVersion.get())
-                .withProject(project)
-                .build()
-            val runtimeLocation = toolFinder.getRuntimeLocation()
+            val runtimeLocation = extension.toolFinder.getRuntimeLocation()
 
             val mendixLibs = arrayOf(
                 "com.mendix.json.jar",
@@ -264,19 +266,10 @@ class MendixGradlePlugin: Plugin<Project> {
             task.dependsOn("mxEnsureRuntime", "mxWriteConfigs", "mxDeployMda")
 
             task.classpath(project.provider {
-                val toolFinder = ToolFinderBuilder()
-                    .withMendixVersion(extension.mendixVersion.get())
-                    .withProject(project)
-                    .build()
-                "${toolFinder.getRuntimeLocation()}/launcher/runtimelauncher.jar"
-
+                "${extension.toolFinder.getRuntimeLocation()}/launcher/runtimelauncher.jar"
             })
             task.jvmArguments.set(project.provider {
-                val toolFinder = ToolFinderBuilder()
-                    .withMendixVersion(extension.mendixVersion.get())
-                    .withProject(project)
-                    .build()
-                listOf("-DMX_INSTALL_PATH=${toolFinder.getRuntimeLocation()}${File.separator}..")
+                listOf("-DMX_INSTALL_PATH=${extension.toolFinder.getRuntimeLocation()}${File.separator}..")
             })
 
             task.appFolder.set(project.tasks.getByName("mxDeployMda").outputs.files.singleFile)
@@ -319,11 +312,7 @@ class MendixGradlePlugin: Plugin<Project> {
                     return@provider emptyList<String>()
                 }
 
-                val toolFinder = ToolFinderBuilder()
-                    .withMendixVersion(mxVersion)
-                    .withProject(project)
-                    .build()
-                val installed = toolFinder.isModelerInstalled()
+                val installed = extension.toolFinder.isModelerInstalled()
                 task.logger.info("modeler is installed: ${installed}")
                 if (!installed) {
                     return@provider "mxInternalUnpackMxbuild"
@@ -372,11 +361,7 @@ class MendixGradlePlugin: Plugin<Project> {
                     return@provider emptyList<String>()
                 }
 
-                val toolFinder = ToolFinderBuilder()
-                    .withMendixVersion(mxVersion)
-                    .withProject(project)
-                    .build()
-                val installed = toolFinder.isRuntimeInstalled()
+                val installed = extension.toolFinder.isRuntimeInstalled()
                 task.logger.lifecycle("runtime is installed: ${installed}")
                 if (!installed) {
                     return@provider "mxInternalUnpackRuntime"
@@ -427,11 +412,7 @@ class MendixGradlePlugin: Plugin<Project> {
 
                 spec.into("lib/runtime") { runtimeSpec ->
                     val runtimeDir = extension.mendixVersion.map { version ->
-                        val toolFinder = ToolFinderBuilder()
-                            .withMendixVersion(version)
-                            .withProject(project)
-                            .build()
-                        toolFinder.getRuntimeLocation()
+                        extension.toolFinder.getRuntimeLocation()
                     }
                     runtimeSpec.from(runtimeDir)
                 }
