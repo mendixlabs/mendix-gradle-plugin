@@ -5,7 +5,7 @@
  * For more details on writing Custom Plugins, please refer to https://docs.gradle.org/8.5/userguide/custom_plugins.html in the Gradle documentation.
  */
 group = "com.mendixlabs.mendix-gradle-plugin"
-version = "0.0.10"
+version = "0.0.11-SNAPSHOT"
 
 plugins {
     // Apply the Java Gradle plugin development plugin to add support for developing Gradle plugins
