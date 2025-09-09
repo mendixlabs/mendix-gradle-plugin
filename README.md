@@ -67,7 +67,7 @@ Open `build.gradle` and add
 ```groovy
 plugins {
     id "application"
-    id "com.mendixlabs.mendix-gradle-plugin" version "0.0.9"
+    id "com.mendixlabs.mendix-gradle-plugin" version "0.0.10"
 }
  
 mendix {
