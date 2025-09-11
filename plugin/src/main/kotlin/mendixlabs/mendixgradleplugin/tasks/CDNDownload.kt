@@ -19,6 +19,10 @@ enum class DistributionType {
 }
 
 fun constructMxbuildFilename(type: DistributionType, version: String): String {
+    if (Os.current() == Os.OSX) {
+        throw RuntimeException("For Mac OS, please install the Studio Pro from the Marketplace.")
+    }
+
     if (type == DistributionType.RUNTIME) {
         return "mendix-${version}.tar.gz"
     }
