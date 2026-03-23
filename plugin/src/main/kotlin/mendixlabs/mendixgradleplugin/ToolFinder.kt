@@ -134,14 +134,17 @@ class ToolFinderBuilder {
             paths.add(File("C:/Program Files/Mendix/${mendixVersion}"))
         }
         if (Os.current() == Os.OSX) {
-            // default location on Mac OS X for Beta versions
+            // folders where to find the OS install. In desc order (premature optimization)
+
+            // Naming changed again after 11.6
+            paths.add(File("/Applications/Mendix Studio Pro ${mendixVersion} Beta.app/Contents"))
+
             // The naming convention changed since 11.5. The build number is not included
             // and the dash is removed. The format is now "Studio Pro 11.5.0 Beta.app"
-            if (File("/Applications/Studio Pro ${mendixVersion} Beta.app/Contents").exists()) {
-                paths.add(File("/Applications/Studio Pro ${mendixVersion} Beta.app/Contents"))
-            } else {
-                paths.add(File("/Applications/Studio Pro ${mendixVersion}-Beta.app/Contents"))
-            }
+            paths.add(File("/Applications/Studio Pro ${mendixVersion} Beta.app/Contents"))
+
+            // default location on Mac OS X for Beta versions
+            paths.add(File("/Applications/Studio Pro ${mendixVersion}-Beta.app/Contents"))
         }
         // default download location
         paths.add(project.layout.buildDirectory.dir("modeler/${mendixVersion}").get().asFile)
