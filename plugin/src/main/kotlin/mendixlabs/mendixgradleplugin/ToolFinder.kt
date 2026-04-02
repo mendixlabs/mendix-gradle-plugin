@@ -132,6 +132,10 @@ class ToolFinderBuilder {
         if (Os.current() == Os.WIN) {
             // default location on windows
             paths.add(File("C:/Program Files/Mendix/${mendixVersion}"))
+
+            // add user home for portable distributions
+            val userHome = System.getProperty("user.home");
+            paths.add(File("${userHome}/AppData/Local/Programs/Mendix/${mendixVersion}"))
         }
         if (Os.current() == Os.OSX) {
             // folders where to find the OS install. In desc order (premature optimization)
