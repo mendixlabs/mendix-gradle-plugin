@@ -33,9 +33,8 @@ repositories {
 }
 
 dependencies {
-    implementation("org.xerial:sqlite-jdbc:3.49.1.0")
-    implementation("com.google.code.gson:gson:2.13.0")
-//    implementation("de.undercouch.download:de.undercouch.download.gradle.plugin:5.5.0")
+    implementation("org.xerial:sqlite-jdbc:3.53.2.1")
+    implementation("com.google.code.gson:gson:2.14.0")
 
     // Use the Kotlin JUnit 5 integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
