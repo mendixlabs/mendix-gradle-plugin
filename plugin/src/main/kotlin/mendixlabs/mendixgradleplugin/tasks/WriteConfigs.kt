@@ -1,8 +1,10 @@
 package mendixlabs.mendixgradleplugin.tasks
 
 import com.google.gson.Gson
+import com.google.gson.JsonArray
 import com.google.gson.JsonParser
 import com.google.gson.annotations.SerializedName
+import com.google.gson.stream.JsonReader
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
@@ -15,6 +17,7 @@ import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import java.io.*
 import java.lang.StringBuilder
+import java.util.Collections
 import java.util.zip.ZipFile
 
 abstract class WriteConfigs : DefaultTask() {
@@ -36,10 +39,10 @@ abstract class WriteConfigs : DefaultTask() {
         logger.info("Extracting configs from ${mprAsJson.get().asFile.toString()}")
 
         val metadata = getMetadata()
-        val configs = getProjectConfigs()
+        val configs = readProjectSettingsFromMpr(mprAsJson.get().asFile)
 
         configs.forEach { config ->
-            if (configNames.get().size > 0 && !configNames.get().contains(config.name)) {
+            if (configNames.get().isNotEmpty() && !configNames.get().contains(config.name)) {
                 project.logger.info("Skipping config ${config.name} as it is not present in configNames")
             }
             logger.info("Writing config ${config.name} to file")
@@ -74,6 +77,64 @@ abstract class WriteConfigs : DefaultTask() {
 
         return configurations;
     }
+
+    fun readProjectSettingsFromMpr(jsonMpr: File): List<Configuration> {
+        FileReader(jsonMpr, Charsets.UTF_8).use { reader ->
+            // use streaming for memory efficiency
+            val jsonReader = JsonReader(reader) ;
+
+            jsonReader.beginObject();
+            if (jsonReader.hasNext() && jsonReader.nextName() == "units") {
+                // search a document type "Settings$ProjectSettings", this should be small enough to load into memory
+                // while complete MPRs represented as JSON go into 10's or 100's of Mb.
+                jsonReader.beginArray();
+                while (jsonReader.hasNext()) {
+                    val projectSettings = testForProjectSettings(jsonReader);
+                    if (projectSettings != null) {
+                        return readConfigurationsFromJson(projectSettings);
+                    }
+                }
+            }
+            jsonReader.endObject();
+            return Collections.emptyList();
+        }
+    }
+
+    fun testForProjectSettings(jsonReader: JsonReader): JsonArray? {
+        var isProjectSettings = false;
+
+        jsonReader.beginObject();
+        while (jsonReader.hasNext()) {
+            when (jsonReader.nextName()) {
+                "\$Type" -> {
+                    isProjectSettings = jsonReader.nextString() == "Settings\$ProjectSettings"
+                }
+                "settingsParts" -> {
+                    if (isProjectSettings) {
+                        return Gson().fromJson<JsonArray>(jsonReader, JsonArray::class.java);
+                    }
+                }
+                else -> jsonReader.skipValue()
+            }
+        }
+        jsonReader.endObject();
+        return null;
+    }
+
+    fun readConfigurationsFromJson(parts: JsonArray): List<Configuration> {
+        val configurations = ArrayList<Configuration>()
+
+        val configSettings = parts.find { el -> el.asJsonObject.get("\$Type").asString.equals("Settings\$ConfigurationSettings") }?.asJsonObject
+        val configs = configSettings?.get("configurations")?.asJsonArray
+        configs?.forEach { e ->
+
+            val config = Gson().fromJson<Configuration>(e, Configuration::class.java)
+            configurations.add(config)
+        }
+
+        return configurations;
+    }
+
 
     @Internal
     fun getMetadata() : MetadataJson {

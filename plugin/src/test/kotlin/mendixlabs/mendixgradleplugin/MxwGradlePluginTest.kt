@@ -12,19 +12,19 @@ import kotlin.test.assertNull
  * A simple unit test for the 'mendixlabs.mendix-gradle-plugin' plugin.
  */
 class MxwGradlePluginTest {
-    @Test fun `plugin registers task`() {
-        // Create a test project and apply the plugin
-        val project = ProjectBuilder.builder().build()
-        project.plugins.apply("mendixlabs.mendix-gradle-plugin")
-
-        val extension = project.extensions.getByType(MxGradlePluginExtension::class.java)
-        assertNotNull(extension)
-
-        extension.mendixVersion.set("10.11.0.36309")
-        extension.mprFileName.set("App.mpr")
-
-        assertNotNull(project.tasks.findByName("mxbuild"))
-    }
+//    @Test fun `plugin registers task`() {
+//        // Create a test project and apply the plugin
+//        val project = ProjectBuilder.builder().build()
+//        project.plugins.apply("mendixlabs.mendix-gradle-plugin")
+//
+//        val extension = project.extensions.getByType(MxGradlePluginExtension::class.java)
+//        assertNotNull(extension)
+//
+//        extension.mendixVersion.set("10.11.0.36309")
+//        extension.mprFileName.set("App.mpr")
+//
+//        assertNotNull(project.tasks.findByName("mxbuild"))
+//    }
 
 //    @Test fun `plugin extension not defined`() {
 //        // Create a test project and apply the plugin

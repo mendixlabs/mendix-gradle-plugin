@@ -1,0 +1,171 @@
+{
+  "units": [
+    {
+      "$ID": "46fa60d7-5f59-4388-a990-d821fcc10f31",
+      "$Type": "Projects$Project",
+      "$ContainerID": "46fa60d7-5f59-4388-a990-d821fcc10f31",
+      "$ContainerProperty": "",
+      "isSystemProject": false
+    },
+    {
+      "$ID": "4e70063d-53e1-477a-ab92-6b763330c293",
+      "$Type": "Settings$ProjectSettings",
+      "$ContainerID": "46fa60d7-5f59-4388-a990-d821fcc10f31",
+      "$ContainerProperty": "projectDocuments",
+      "settingsParts": [
+        {
+          "$ID": "a87cd9bc-6661-5a37-a14f-38179094ffec",
+          "$Type": "Settings$WebUIProjectSettingsPart",
+          "themeModuleOrder": [],
+          "useOptimizedClient": "Yes",
+          "urlPrefix": "p",
+          "enableWidgetBundling": false,
+          "enableMicroflowReachabilityAnalysis": true,
+          "enableNewWidgetGeneration": true,
+          "enableNewStringBehavior": false,
+          "enableRspackBundler": false
+        },
+        {
+          "$ID": "1c07ae20-2beb-5064-a4c4-fc9866ca19e7",
+          "$Type": "Settings$IntegrationProjectSettingsPart"
+        },
+        {
+          "$ID": "cfcd04d8-332f-5cb1-8c64-d3f184a47731",
+          "$Type": "Settings$ConfigurationSettings",
+          "configurations": [
+            {
+              "$ID": "b6fc893f-aa41-41b6-a507-4d736ab025c6",
+              "$Type": "Settings$Configuration",
+              "customSettings": [],
+              "constantValues": [],
+              "openTelemetry": null,
+              "name": "Default",
+              "applicationRootUrl": "http://localhost:8080/",
+              "runtimePortNumber": 8080,
+              "adminPortNumber": 8090,
+              "runtimePortOnlyLocal": false,
+              "adminPortOnlyLocal": true,
+              "maxJavaHeapSize": 0,
+              "extraJvmParameters": "",
+              "databaseType": "Hsqldb",
+              "databaseUrl": "",
+              "databaseName": "default",
+              "databaseUseIntegratedSecurity": false,
+              "databaseUserName": "",
+              "databasePassword": ""
+            },
+            {
+              "$ID": "387eb9aa-b2a2-4ae4-b3f0-50474bf3b41b",
+              "$Type": "Settings$Configuration",
+              "customSettings": [],
+              "constantValues": [],
+              "openTelemetry": {
+                "$ID": "28264898-b1a9-4afb-9a77-77f87dbbfc3b",
+                "$Type": "Settings$OpenTelemetryConfiguration",
+                "traces": {
+                  "$ID": "8d23fdda-4a19-4186-a1b3-75b46a055a88",
+                  "$Type": "Settings$OpenTelemetryTracesConfiguration",
+                  "enabled": true
+                },
+                "logs": {
+                  "$ID": "c9243b00-d6c8-45b4-83d8-aa3724e2478d",
+                  "$Type": "Settings$OpenTelemetryLogsConfiguration",
+                  "enabled": true
+                },
+                "enabled": false,
+                "endpoint": "http://localhost:4318",
+                "serviceName": "MendixApp"
+              },
+              "name": "DifferntPort",
+              "applicationRootUrl": "http://localhost:8082/",
+              "runtimePortNumber": 8082,
+              "adminPortNumber": 8092,
+              "runtimePortOnlyLocal": false,
+              "adminPortOnlyLocal": true,
+              "maxJavaHeapSize": 0,
+              "extraJvmParameters": "",
+              "databaseType": "Hsqldb",
+              "databaseUrl": "",
+              "databaseName": "default",
+              "databaseUseIntegratedSecurity": false,
+              "databaseUserName": "",
+              "databasePassword": ""
+            }
+          ]
+        },
+        {
+          "$ID": "239a8165-5256-533c-b055-300e409a5001",
+          "$Type": "Settings$RuntimeSettings",
+          "afterStartupMicroflow": "",
+          "beforeShutdownMicroflow": "",
+          "healthCheckMicroflow": "",
+          "firstDayOfWeek": "Default",
+          "defaultTimeZoneCode": "",
+          "scheduledEventTimeZoneCode": "Etc/UTC",
+          "hashAlgorithm": "BCrypt",
+          "bcryptCost": 12,
+          "roundingMode": "HalfUp",
+          "allowUserMultipleSessions": true,
+          "enableDataStorageOptimisticLocking": false,
+          "useSystemContextForBackgroundTasks": false,
+          "useDatabaseForeignKeyConstraints": true,
+          "javaMajorVersion": "21",
+          "useOQLVersion2": true,
+          "sslCertificateAlgorithm": "PKIX",
+          "decimalScale": 8
+        },
+        {
+          "$ID": "18230e77-753e-5be4-9f9a-3e8218257929",
+          "$Type": "Settings$ModelerSettings",
+          "actionActivityDefaultColors": [],
+          "lowerCaseMicroflowVariables": false,
+          "defaultSequenceFlowLineType": "BezierCurve",
+          "defaultAssociationStorage": "Column"
+        },
+        {
+          "$ID": "a02ab3c3-79d3-5b8b-ac49-3a8f8a688a50",
+          "$Type": "Settings$LanguageSettings",
+          "languages": [
+            {
+              "$ID": "343f3484-7be4-4656-84de-daeef914edfb",
+              "$Type": "Settings$Language",
+              "code": "en_US",
+              "checkCompleteness": false,
+              "customDateFormat": "",
+              "customTimeFormat": "",
+              "customDateTimeFormat": ""
+            }
+          ],
+          "defaultLanguageCode": "en_US"
+        },
+        {
+          "$ID": "4db45284-9e59-5505-9554-6c69cc7f618e",
+          "$Type": "Settings$CertificateSettings",
+          "certificates": []
+        },
+        {
+          "$ID": "7e9e02cf-02fc-5314-9244-79cc7ae97767",
+          "$Type": "Settings$WorkflowsProjectSettingsPart",
+          "groups": [],
+          "onWorkflowEvent": [],
+          "userEntity": "System.User",
+          "workflowEngineParallelism": 5,
+          "defaultTaskParallelism": 3
+        },
+        {
+          "$ID": "7b7d6e82-2a8c-5a6c-8805-dd0e7df5013e",
+          "$Type": "Settings$JarDeploymentSettings",
+          "exclusions": []
+        },
+        {
+          "$ID": "ea89a6b5-573c-5707-a3fc-1735273c4833",
+          "$Type": "Settings$DistributionSettings",
+          "isDistributable": false,
+          "version": "",
+          "basedOnVersion": ""
+        }
+      ]
+    }
+  ]
+}
+
