@@ -23,6 +23,10 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
+kotlin {
+    jvmToolchain(11)
+}
+
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
@@ -73,4 +77,8 @@ val functionalTest by tasks.registering(Test::class) {
 }
 
 gradlePlugin.testSourceSets.add(functionalTestSourceSet)
+
+tasks.named<Test>("test") {
+    useJUnitPlatform()
+}
 
