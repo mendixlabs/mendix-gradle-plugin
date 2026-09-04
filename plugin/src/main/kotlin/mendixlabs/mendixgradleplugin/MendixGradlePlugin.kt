@@ -189,6 +189,8 @@ class MendixGradlePlugin: Plugin<Project> {
         // -------------------------------------------------------------------------------------------------------------
         // Convenience tasks
         // -------------------------------------------------------------------------------------------------------------
+        project.tasks.register<UpdateGitIgnore>("mxUpdateGitIgnore", UpdateGitIgnore::class.java) { }
+
         project.tasks.register<MxCommand>("mxInit", MxCommand::class.java) { task ->
             val appName = extension.mprFileName.map { s -> s.replace(".mpr", "") }
 
@@ -196,6 +198,7 @@ class MendixGradlePlugin: Plugin<Project> {
             task.description = "Create a new Mendix project using the available 'mendix' config."
 
             task.dependsOn("mxEnsureModeler")
+            task.finalizedBy("mxUpdateGitIgnore")
 
             task.outputs.upToDateWhen { project.file(extension.mprFileName).exists() }
 
